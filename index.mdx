@@ -1,97 +1,161 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Overview"
+description: "Thesis is a deep AI search platform for DeFi"
 ---
 
-## Setting up
+Thesis is an AI-powered DeFi research platform that goes deep, fast. Our platform transforms complex, multi-source research into streamlined, AI-assisted workflows that deliver deep contextual insights. Built specifically for crypto and financial professionals, Thesis connects premium on-chain and off-chain data sources through an intelligent Agent Spaces system, enabling users to create custom research playbooks and maintain shared context across teams.
 
-Get your documentation site up and running in minutes.
+## What is Thesis?
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
+Thesis revolutionizes how professionals conduct DeFi research by combining advanced AI agents with comprehensive data connectivity. Unlike traditional research tools that require manual data aggregation from multiple sources, Thesis provides a unified workspace where AI agents can access, analyze, and synthesize information from diverse premium data sources in real-time.
+
+### How It Works
+
+The platform operates through:
+
+**Standard Research** - standard research mode where users can:
+
+- **Quick Web Search**: Quickly search the web for information. This feature is completely free for all users.
+- **Deep DeFi Research**: Perform deep research on DeFi protocols, tokens, market data, and social media sentiment. For free users, this feature is limited to a certain number of conversations. For paid users, there are less constraints. For more information, please see [Pricing](https://app.thesis.io/pricing).
+
+**Agent Spaces** - customizable research environments where users can:
+
+- **Define Research Scope**: Set specific parameters and objectives for your analysis
+- **Own your system prompt**: Customize the system prompt to your needs.
+- **Upload Private Intelligence**: Integrate proprietary documents, CSVs, and PDFs for more private insights.
+- **Structure Knowledge**: Create inherited knowledge sections for consistent context
+
+### Key Capabilities
+
+<Info>
+Thesis specializes in complex DeFi research that traditionally requires hours of manual work across multiple platforms.
+</Info>
+
+Our platform excels in:
+
+| Research Area | Capabilities |
+|---------------|-------------|
+| **DEX Analytics** | Deep liquidity analysis, volume trends, and exchange performance metrics |
+| **Whale Tracking** | Large holder movement analysis and position tracking |
+| **Perpetual Positions** | Derivatives market analysis and position monitoring |
+| **Liquidity/LP Flows** | Liquidity provider behavior and capital movement patterns |
+| **Meme Coin Alpha** | Early trend detection and sentiment-driven token analysis |
+| **Cross-Chain Analysis** | Multi-blockchain price and transaction correlation |
+| **Sentiment Analysis** | Social media (Twitter) and news sentiment integration |
+| **Macro Events** | Economic event impact on DeFi markets |
+
+### Benefits for Users
+
+**For Individual Researchers:**
+- **Reduce Research Time**: Transform hours of manual research into minutes of AI-assisted analysis
+- **Access Premium Data**: Connect to multiple high-quality data sources through one interface
+- **Maintain Context**: Keep research context and findings organized in structured spaces
+- **Reproducible Workflows**: Create research playbooks that can be repeated and refined
+
+**For Teams:**
+- **Shared Knowledge Base**: Enable team members to build on each other's research
+- **Auditable Processes**: Maintain clear research trails and methodology documentation  
+- **Collaborative Spaces**: Work together in shared research environments
+- **Consistent Standards**: Ensure research quality and approach consistency across analysts
+
+## Core Functionalities
+
+Thesis offers three primary API endpoints to power your DeFi search applications:
+
+### 1. Create New Conversation for DeFi Search
+
+
+<a href="./api-reference/endpoint/new-conversation" target="_self" className="endpoint-link">/new-conversation -></a>\
+Start intelligent conversations about DeFi topics using our conversation API.
+Create new conversation threads that can intelligently search and analyze DeFi protocols, tokens, and market data. Perfect for building chatbots or interactive DeFi research tools.
+
+[Swagger API Reference →](https://app-be.thesis.io/docs#/conversations/integration_new_conversation_api_v1_integration_conversations_post)
+
+### 2. Query Conversation
+
+<a href="./api-reference/endpoint/get-conversation" target="_self" className="endpoint-link">/get-conversation -></a>\
+Retrieve and continue existing conversations with full context and history.
+
+[Swagger API Reference →](https://app-be.thesis.io/docs#/conversations/integration_get_conversation_api_v1_integration_conversations__conversation_id__get)
+
+### 3. Get Spaces Information
+
+
+<a href="./api-reference/endpoint/get-spaces" target="_self" className="endpoint-link">/get-spaces -></a>\
+Access comprehensive information about Thesis spaces.
+
+[Swagger API Reference →](https://app-be.thesis.io/docs#/spaces)
+
+## Get Started
+
+<CardGroup cols={2}>
+
+<Card title="API Playground" icon="play" href="https://app-be.thesis.io/docs">
+  Explore the Thesis API directly in our interactive documentation.
 </Card>
 
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
-
-## Create beautiful pages
-
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
+<Card title="Quickstart" icon="rocket" href="/quickstart">
+  Use our SDKs to perform your first Thesis DeFi search.
 </Card>
+
+<Card title="Integrate with Thesis" icon="code" href="/integration/code">
+  Integrate your Web3 Application with Thesis.
+</Card>
+
+<Card title="Examples" icon="book-open" href="/examples/hello-world">
+  Learn from our pre-built tutorials and live demos.
+</Card>
+
+</CardGroup>
+
+## Integration Possibilities
+
+Thesis Deep AI Search is designed to integrate seamlessly into existing workflows and applications:
+
+### API Integration
+- **RESTful Architecture**: Standard HTTP endpoints for easy integration
+- **Conversation Management**: Persistent conversation threads for stateful interactions
+- **Space Configuration**: Programmatic access to research space setup and management
+- **Real-Time Data**: Live updates from connected premium data sources
+
+### Use Cases
+
+<CardGroup cols={2}>
+
+<Card title="Investment Research" icon="chart-line">
+  **Professional Analysis**
+  - Due diligence on DeFi protocols
+  - Risk assessment and portfolio analysis  
+  - Market trend identification
+  - Competitive landscape mapping
+</Card>
+
+<Card title="Trading Operations" icon="arrows-rotate">
+  **Strategic Trading**
+  - Event-driven trading strategies
+  - Whale movement tracking
+  - Alpha generation from sentiment analysis
+  - Cross-chain arbitrage opportunities
+</Card>
+
+<Card title="Risk Management" icon="shield">
+  **Institutional Risk**
+  - Protocol security assessment
+  - Liquidity risk monitoring
+  - Counterparty analysis
+  - Market volatility prediction
+</Card>
+
+<Card title="Product Development" icon="code">
+  **DeFi Applications**
+  - Embedded research capabilities
+  - User-facing analytics dashboards
+  - Automated research reports
+  - Custom intelligence feeds
+</Card>
+
+</CardGroup>
+
+<Note>
+  **Ready to start building?** Check out our [API Reference](/api-reference/open-api-specs) or explore the [interactive API documentation](https://app-be.thesis.io/docs).
+</Note>

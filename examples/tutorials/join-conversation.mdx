@@ -1,0 +1,574 @@
+---
+title: "Join an existing Thesis.io conversation"
+description: "Learn how to connect to ongoing DeFi research conversations using Thesis.io's streaming API"
+---
+
+This tutorial will guide you through building a Python client that connects to existing Thesis.io conversations, allowing you to continue DeFi research and ask follow-up questions in real-time.
+
+<Info>
+This tutorial assumes you have an existing conversation ID from a previous Thesis.io session. If you need to create a new conversation first, check out our [Quickstart guide](/quickstart).
+</Info>
+
+## Prerequisites
+
+Before starting, make sure you have:
+
+- Python 3.7+ installed
+- A valid Thesis.io API key
+- An existing conversation ID from a previous session
+- Basic knowledge of async Python programming
+
+<Card title="Get your Thesis API key" icon="key" horizontal href="https://app.thesis.io/settings" />
+
+## Required Dependencies
+
+Install the required Python packages:
+
+```bash
+pip install httpx asyncio python-dotenv
+```
+
+## Environment Setup
+
+Create a `.env` file in your project root:
+
+```bash
+API_KEY=your_thesis_api_key_here
+API_BASE_URL=https://app-be.thesis.io
+```
+
+## Building the Streaming Client
+
+Let's break down the streaming client into digestible components:
+
+### 1. Core Client Class
+
+First, we'll create the main streaming client class that handles HTTP connections:
+
+```python
+import asyncio
+import json
+import os
+import httpx
+
+class StreamingClient:
+    def __init__(self, base_url: str = 'https://app-be.thesis.io'):
+        self.base_url = base_url
+        self.client = None
+
+    async def __aenter__(self):
+        self.client = httpx.AsyncClient(timeout=300.0)  # 5 minute timeout
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.client:
+            await self.client.aclose()
+```
+
+<Tip>
+The async context manager pattern ensures proper cleanup of HTTP connections, even if errors occur during streaming.
+</Tip>
+
+### 2. Event Handler System
+
+The streaming API returns various types of events. Here's how to handle them:
+
+```python
+async def _handle_event(self, event: dict):
+    """Handle different types of events from the stream"""
+    event_type = event.get('type', 'unknown')
+
+    if event_type == 'connection':
+        status = event.get('status', '')
+        message = event.get('message', '')
+        if status == 'connected':
+            print(f'🔗 {message}')
+        elif status == 'disconnected':
+            print(f'🔌 {message}')
+
+    elif event_type == 'oh_event':
+        # Main socket.io event data
+        data = event.get('data', {})
+        print('\n📨 Socket Event:')
+        print(f"   Type: {data.get('type', 'N/A')}")
+        print(f"   Source: {data.get('source', 'N/A')}")
+        
+        # Display content based on what's available
+        if 'content' in data:
+            print(f"   Content: {data['content']}")
+        if 'message' in data:
+            print(f"   Message: {data['message']}")
+        if 'observation' in data:
+            print(f"   Observation: {data['observation']}")
+            
+        # Check for agent state changes
+        if 'extras' in data and data['extras']:
+            extras = data['extras']
+            if 'agent_state' in extras:
+                print(f"   Agent State: {extras['agent_state']}")
+                if extras['agent_state'] == 'awaiting_user_input':
+                    print('   🏁 Agent is now awaiting user input - conversation completed!')
+        
+        print(f'   Full Data: {json.dumps(data, indent=2)}')
+        print('-' * 30)
+
+    elif event_type == 'heartbeat':
+        print('💓 Heartbeat', end='', flush=True)
+
+    elif event_type == 'error':
+        error_type = event.get('error', 'Unknown')
+        message = event.get('message', '')
+        print(f'\n❌ Error ({error_type}): {message}')
+
+    elif event_type == 'completion':
+        reason = event.get('reason', 'unknown')
+        status = event.get('status', 'finished')
+        print(f'\n🏁 Completion: {status} (reason: {reason})')
+
+    else:
+        print(f'\n❓ Unknown event type: {event_type}')
+        print(f'   Full Event: {json.dumps(event, indent=2)}')
+```
+
+### 3. Streaming Connection Logic
+
+The core streaming functionality handles chunked JSON responses:
+
+```python
+async def stream_conversation(
+    self,
+    conversation_id: str,
+    api_key: str,
+    system_prompt: str = '',
+    user_prompt: str = '',
+    research_mode: str = 'deep_research',
+):
+    """Stream conversation responses from the API endpoint"""
+    params = {
+        'conversation_id': conversation_id,
+        'system_prompt': system_prompt,
+        'user_prompt': user_prompt,
+        'research_mode': research_mode,
+    }
+
+    endpoint = f'{self.base_url}/api/v1/integration/conversations/join-conversation'
+
+    print(f'🔗 Connecting to: {endpoint}')
+    print(f'📋 Parameters: {params}')
+    print('=' * 50)
+
+    try:
+        async with self.client.stream(
+            'POST',
+            endpoint,
+            json=params,
+            headers={'Authorization': f'Bearer {api_key}'},
+        ) as response:
+            print(f'✅ Response Status: {response.status_code}')
+
+            if response.status_code != 200:
+                error_text = await response.aread()
+                print(f'❌ Error: {error_text.decode()}')
+                return
+
+            print('🔄 Streaming events:')
+            print('-' * 50)
+
+            # Buffer to handle chunked JSON
+            buffer = ''
+
+            async for chunk in response.aiter_text():
+                buffer += chunk
+
+                # Process complete JSON objects from buffer
+                while buffer:
+                    try:
+                        decoder = json.JSONDecoder()
+                        event, idx = decoder.raw_decode(buffer)
+
+                        await self._handle_event(event)
+
+                        # Remove processed JSON from buffer
+                        buffer = buffer[idx:].lstrip()
+
+                        # Check for completion or error
+                        if event.get('type') in ['completion', 'error']:
+                            return
+
+                    except json.JSONDecodeError:
+                        # Incomplete JSON, wait for more data
+                        break
+
+            # Handle any remaining buffer content
+            if buffer.strip():
+                print(f'⚠️  Unparsed buffer content: {buffer}')
+
+    except httpx.ConnectError:
+        print(f'❌ Failed to connect to {self.base_url}')
+        print('Make sure your API endpoint is accessible!')
+    except httpx.TimeoutException:
+        print('⏰ Request timed out')
+    except Exception as e:
+        print(f'❌ Unexpected error: {e}')
+```
+
+<Info>
+The JSON buffer handling is crucial because streaming responses can arrive in chunks, potentially splitting JSON objects across multiple chunks.
+</Info>
+
+### 4. Main Application Logic
+
+Here's how to tie everything together:
+
+```python
+async def main():
+    """Main function to run the streaming client"""
+    # Load environment variables
+    from dotenv import load_dotenv
+    load_dotenv()
+    
+    # Configuration - modify these values for your use case
+    config = {
+        'conversation_id': '4b03707134ee42b4abf613353f746b6c',  # Replace with your conversation ID
+        'api_key': os.getenv('API_KEY'),
+        'system_prompt': 'You are a helpful AI assistant specialized in DeFi research and analysis.',
+        'user_prompt': 'What are the latest developments in yield farming protocols?',
+        'research_mode': 'deep_research',
+    }
+
+    if not config['api_key']:
+        print('❌ Error: API_KEY not found in environment variables')
+        return
+
+    print('🚀 Starting Thesis.io Streaming Client')
+
+    async with StreamingClient(os.getenv('API_BASE_URL', 'https://app-be.thesis.io')) as client:
+        await client.stream_conversation(**config)
+
+if __name__ == '__main__':
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print('\n⏹️  Client stopped by user')
+    except Exception as e:
+        print(f'\n💥 Client error: {e}')
+```
+
+## Complete Implementation
+
+<Tabs>
+  <Tab title="Complete Code">
+
+Here's the complete implementation you can copy and use:
+
+```python
+#!/usr/bin/env python3
+"""
+Thesis.io Streaming Client - Join existing conversations for DeFi research
+"""
+
+import asyncio
+import json
+import os
+import sys
+import httpx
+from dotenv import load_dotenv
+
+
+
+class StreamingClient:
+    def __init__(self, base_url: str = 'https://app-be.thesis.io'):
+        self.base_url = base_url
+        self.client = None
+
+    async def __aenter__(self):
+        self.client = httpx.AsyncClient(timeout=300.0)
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.client:
+            await self.client.aclose()
+
+    async def _handle_event(self, event: dict):
+        """Handle different types of events from the stream"""
+        event_type = event.get('type', 'unknown')
+
+        if event_type == 'connection':
+            status = event.get('status', '')
+            message = event.get('message', '')
+            if status == 'connected':
+                print(f'🔗 {message}')
+            elif status == 'disconnected':
+                print(f'🔌 {message}')
+
+        elif event_type == 'oh_event':
+            data = event.get('data', {})
+            print('\n📨 Socket Event:')
+            print(f"   Type: {data.get('type', 'N/A')}")
+            print(f"   Source: {data.get('source', 'N/A')}")
+            if 'content' in data:
+                print(f"   Content: {data['content']}")
+            if 'message' in data:
+                print(f"   Message: {data['message']}")
+            if 'observation' in data:
+                print(f"   Observation: {data['observation']}")
+            if 'extras' in data and data['extras']:
+                extras = data['extras']
+                if 'agent_state' in extras:
+                    print(f"   Agent State: {extras['agent_state']}")
+                    if extras['agent_state'] == 'awaiting_user_input':
+                        print('   🏁 Agent is now awaiting user input - conversation completed!')
+            print(f'   Full Data: {json.dumps(data, indent=2)}')
+            print('-' * 30)
+
+        elif event_type == 'heartbeat':
+            print('💓 Heartbeat', end='', flush=True)
+
+        elif event_type == 'error':
+            error_type = event.get('error', 'Unknown')
+            message = event.get('message', '')
+            print(f'\n❌ Error ({error_type}): {message}')
+
+        elif event_type == 'completion':
+            reason = event.get('reason', 'unknown')
+            status = event.get('status', 'finished')
+            print(f'\n🏁 Completion: {status} (reason: {reason})')
+
+        else:
+            print(f'\n❓ Unknown event type: {event_type}')
+            print(f'   Full Event: {json.dumps(event, indent=2)}')
+
+    async def stream_conversation(
+        self,
+        conversation_id: str,
+        api_key: str,
+        system_prompt: str = '',
+        user_prompt: str = '',
+        research_mode: str = 'deep_research',
+    ):
+        """Stream conversation responses from the API endpoint"""
+        params = {
+            'conversation_id': conversation_id,
+            'system_prompt': system_prompt,
+            'user_prompt': user_prompt,
+            'research_mode': research_mode,
+        }
+
+        endpoint = f'{self.base_url}/api/v1/integration/conversations/join-conversation'
+
+        print(f'🔗 Connecting to: {endpoint}')
+        print(f'📋 Parameters: {params}')
+        print('=' * 50)
+
+        try:
+            async with self.client.stream(
+                'POST',
+                endpoint,
+                json=params,
+                headers={'Authorization': f'Bearer {api_key}'},
+            ) as response:
+                print(f'✅ Response Status: {response.status_code}')
+
+                if response.status_code != 200:
+                    error_text = await response.aread()
+                    print(f'❌ Error: {error_text.decode()}')
+                    return
+
+                print('🔄 Streaming events:')
+                print('-' * 50)
+
+                buffer = ''
+
+                async for chunk in response.aiter_text():
+                    buffer += chunk
+
+                    while buffer:
+                        try:
+                            decoder = json.JSONDecoder()
+                            event, idx = decoder.raw_decode(buffer)
+
+                            await self._handle_event(event)
+                            buffer = buffer[idx:].lstrip()
+
+                            if event.get('type') == 'completion':
+                                status = event.get('status', 'finished')
+                                if status == 'cancelled':
+                                    print(f"\n🚫 Stream cancelled: {event.get('message', 'Stream was cancelled')}")
+                                elif status == 'finished':
+                                    print(f"\n✅ Stream completed successfully with message: {event.get('message', 'Unknown message')}")
+                                else:
+                                    print(f"\n🏁 Stream ended with status '{status}': {event.get('message', 'No message')}")
+                                return
+                            elif event.get('type') == 'error':
+                                print(f"\n❌ Stream ended with error: {event.get('message', 'Unknown error')}")
+                                return
+
+                        except json.JSONDecodeError:
+                            break
+
+                if buffer.strip():
+                    print(f'⚠️  Unparsed buffer content: {buffer}')
+
+        except httpx.ConnectError:
+            print(f'❌ Failed to connect to {self.base_url}')
+            print('Make sure your API endpoint is accessible!')
+        except httpx.TimeoutException:
+            print('⏰ Request timed out')
+        except Exception as e:
+            print(f'❌ Unexpected error: {e}')
+
+async def main():
+    """Main function to run the streaming client"""
+    load_dotenv()
+    
+    # Example configuration - modify these values
+    config = {
+        'conversation_id': '4b03707134ee42b4abf613353f746b6c',  # Replace with your conversation ID
+        'api_key': os.getenv('API_KEY'),
+        'system_prompt': 'You are a helpful AI assistant specialized in DeFi research and analysis.',
+        'user_prompt': 'What are the latest developments in yield farming protocols?',
+        'research_mode': 'deep_research',
+    }
+
+    if not config['api_key']:
+        print('❌ Error: API_KEY not found in environment variables')
+        return
+
+    print('🚀 Starting Thesis.io Streaming Client')
+
+    async with StreamingClient(os.getenv('API_BASE_URL', 'https://app-be.thesis.io')) as client:
+        await client.stream_conversation(**config)
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help', 'help']:
+        print("""
+Thesis.io Streaming Client
+
+This client connects to existing Thesis.io conversations for continued DeFi research.
+
+Before running:
+1. Set your API_KEY in the .env file
+2. Set your API_BASE_URL (optional, defaults to https://app-be.thesis.io)
+3. Update the conversation_id in the script with your actual conversation ID
+
+Usage:
+    python join_conversation.py
+        """)
+    else:
+        try:
+            asyncio.run(main())
+        except KeyboardInterrupt:
+            print('\n⏹️  Client stopped by user')
+        except Exception as e:
+            print(f'\n💥 Client error: {e}')
+```
+
+  </Tab>
+  <Tab title="Configuration Options">
+
+### Environment Variables
+
+| Variable | Required | Description | Default |
+|----------|----------|-------------|---------|
+| `API_KEY` | ✅ | Your Thesis.io API key | None |
+| `API_BASE_URL` | ❌ | Base URL for the API | `https://app-be.thesis.io` |
+
+### Research Modes
+
+| Mode | Description |
+|------|-------------|
+| `deep_research` | Comprehensive analysis with multiple sources |
+| `chat` | Faster responses with fewer sources |
+| `follow_up` | Follow-up questions and responses |
+| `rerun_section` | Rerun a specific section of your Thesis.io Space |
+
+### Configuration Parameters
+
+```python
+config = {
+    'conversation_id': 'your_conversation_id_here',
+    'api_key': os.getenv('API_KEY'),
+    'system_prompt': 'Your custom system prompt for DeFi research',
+    'user_prompt': 'Your follow-up question or research request',
+    'research_mode': 'deep_research',
+}
+```
+
+  </Tab>
+</Tabs>
+
+## Running the Code
+
+1. **Save the code** to a file named `join_conversation.py`
+
+2. **Set up your environment**:
+   ```bash
+   # Create .env file
+   echo "API_KEY=your_actual_api_key_here" > .env
+   echo "API_BASE_URL=https://app-be.thesis.io" >> .env
+   ```
+
+3. **Update the conversation ID**:
+   Replace `'4b03707134ee42b4abf613353f746b6c'` in the code with your actual conversation ID from a previous Thesis.io session.
+
+4. **Run the client**:
+   ```bash
+   python join_conversation.py
+   ```
+
+## Understanding the Output
+
+The streaming client will display different types of events:
+
+- **🔗 Connection events**: When the client connects/disconnects
+- **📨 Socket events**: Main conversation data and responses
+- **💓 Heartbeat**: Keep-alive signals from the server
+- **🏁 Completion**: When the conversation finishes or requires user input
+- **❌ Errors**: Any issues during the streaming process
+
+<Tip>
+The client automatically handles JSON chunking and provides detailed logging to help you understand what's happening during the streaming process.
+</Tip>
+
+## Common Use Cases
+
+### DeFi Protocol Research
+```python
+config = {
+    'conversation_id': 'your_conversation_id',
+    'system_prompt': 'You are a DeFi protocol analyst focusing on yield optimization strategies.',
+    'user_prompt': 'Analyze the recent changes in Compound v3 and their impact on lending rates.',
+    'research_mode': 'deep_research',
+}
+```
+
+### Market Analysis Follow-up
+```python
+config = {
+    'conversation_id': 'your_conversation_id',
+    'system_prompt': 'You are a crypto market analyst specializing in DeFi trends.',
+    'user_prompt': 'Based on our previous discussion, what are the risks of the new staking derivatives?',
+    'research_mode': 'chat',
+}
+```
+
+## Error Handling
+
+The client includes comprehensive error handling for:
+
+- **Connection failures**: Network issues or invalid endpoints
+- **Authentication errors**: Invalid API keys
+- **Timeout errors**: Long-running requests that exceed the 5-minute limit
+- **JSON parsing errors**: Malformed responses from the server
+- **Stream interruptions**: Graceful handling of interrupted connections
+
+## Next Steps
+
+- Explore [API Reference](/api-reference) for more endpoint options
+- Learn about [Research Modes](/concepts/research-modes) for different analysis types
+- Check out [Live Demos](/examples/live-demos) for interactive examples
+- Read about [DeFi Data Sources](/concepts/data-sources) available through Thesis.io
+
+<Warning>
+Remember to keep your API key secure and never commit it to version control. Always use environment variables for sensitive configuration.
+</Warning>
