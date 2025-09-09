@@ -1,5 +1,5 @@
 ---
-title: "Join an existing Thesis.io conversation"
+title: "Join an existing conversation"
 description: "Learn how to connect to ongoing DeFi research conversations using Thesis.io's streaming API"
 ---
 
@@ -14,7 +14,7 @@ This tutorial assumes you have an existing conversation ID from a previous Thesi
 Before starting, make sure you have:
 
 - Python 3.7+ installed
-- A valid Thesis.io API key
+- A valid Thesis.io Space API key
 - An existing conversation ID from a previous session
 - Basic knowledge of async Python programming
 
@@ -73,6 +73,9 @@ The async context manager pattern ensures proper cleanup of HTTP connections, ev
 
 The streaming API returns various types of events. Here's how to handle them:
 
+<Tabs>
+  <Tab title="Event Handler Code">
+
 ```python
 async def _handle_event(self, event: dict):
     """Handle different types of events from the stream"""
@@ -112,9 +115,6 @@ async def _handle_event(self, event: dict):
         print(f'   Full Data: {json.dumps(data, indent=2)}')
         print('-' * 30)
 
-    elif event_type == 'heartbeat':
-        print('💓 Heartbeat', end='', flush=True)
-
     elif event_type == 'error':
         error_type = event.get('error', 'Unknown')
         message = event.get('message', '')
@@ -130,9 +130,37 @@ async def _handle_event(self, event: dict):
         print(f'   Full Event: {json.dumps(event, indent=2)}')
 ```
 
+  </Tab>
+  <Tab title="Event Types Explained">
+
+The streaming API sends several types of events:
+
+**Connection Events**
+- `status: 'connected'` - Successfully connected to the stream
+- `status: 'disconnected'` - Connection lost or closed
+
+**Socket Events (`oh_event`)**
+- Main conversation data and AI responses
+- Contains `type`, `source`, `content`, `message`, `observation` depending on the message types. A comprehensive event list will be added in the future.
+- Includes agent state changes in `extras.agent_state`, also depending on the message types.
+
+**Completion Events**
+- Signals when the conversation ends
+- Includes completion reason and status
+
+**Error Events**
+- Connection errors, authentication failures
+- Includes error type and descriptive message
+
+</Tab>
+</Tabs>
+
 ### 3. Streaming Connection Logic
 
 The core streaming functionality handles chunked JSON responses:
+
+<Tabs>
+  <Tab title="Streaming Function">
 
 ```python
 async def stream_conversation(
@@ -212,9 +240,39 @@ async def stream_conversation(
         print(f'❌ Unexpected error: {e}')
 ```
 
-<Info>
+  </Tab>
+  <Tab title="How It Works" icon="cog">
+
+**Key Components:**
+
+1. **Request Setup**
+   - Constructs the API endpoint URL
+   - Prepares conversation parameters
+   - Sets authentication headers
+
+2. **Streaming Response**
+   - Uses `httpx.stream()` for long-running connections
+   - Handles HTTP errors and timeouts gracefully
+
+3. **JSON Buffer Processing**
+   - Accumulates text chunks in a buffer
+   - Parses complete JSON objects as they arrive
+   - Handles split JSON across multiple chunks
+
+4. **Event Processing**
+   - Delegates each event to the `_handle_event()` method
+   - Monitors for completion/error events to end streaming
+
+5. **Error Handling**
+   - Connection failures, timeouts, and unexpected errors
+   - Provides helpful debug information
+
+  </Tab>
+</Tabs>
+
+<Warning>
 The JSON buffer handling is crucial because streaming responses can arrive in chunks, potentially splitting JSON objects across multiple chunks.
-</Info>
+</Warning>
 
 ### 4. Main Application Logic
 
@@ -320,9 +378,6 @@ class StreamingClient:
                         print('   🏁 Agent is now awaiting user input - conversation completed!')
             print(f'   Full Data: {json.dumps(data, indent=2)}')
             print('-' * 30)
-
-        elif event_type == 'heartbeat':
-            print('💓 Heartbeat', end='', flush=True)
 
         elif event_type == 'error':
             error_type = event.get('error', 'Unknown')
@@ -522,7 +577,6 @@ The streaming client will display different types of events:
 
 - **🔗 Connection events**: When the client connects/disconnects
 - **📨 Socket events**: Main conversation data and responses
-- **💓 Heartbeat**: Keep-alive signals from the server
 - **🏁 Completion**: When the conversation finishes or requires user input
 - **❌ Errors**: Any issues during the streaming process
 

@@ -5,7 +5,7 @@
   "colors": {
     "primary": "#0070FF",
     "light": "#7fb7ff",
-    "dark": "#0f172a"
+    "dark": "#0070FF"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -31,12 +31,15 @@
         "tab": "Examples",
         "groups": [
           {
-            "group": "Live Demos",
-            "pages": ["examples/live-demos/token-signal-telegram"]
+            "group": "Tutorials",
+            "pages": [
+              "examples/tutorials/hello-world",
+              "examples/tutorials/join-conversation"
+            ]
           },
           {
-            "group": "Tutorials",
-            "pages": ["examples/tutorials/hello-world", "examples/tutorials/join-conversation"]
+            "group": "Live Demos",
+            "pages": ["examples/live-demos/token-signal-telegram"]
           }
         ]
       }
@@ -44,9 +47,9 @@
     "global": {
       "anchors": [
         {
-          "anchor": "API Status",
-          "href": "https://app-be.thesis.io/docs",
-          "icon": "chart-line"
+          "anchor": "Thesis.io",
+          "href": "https://app.thesis.io",
+          "icon": "wolf-pack-battalion"
         },
         {
           "anchor": "Github",

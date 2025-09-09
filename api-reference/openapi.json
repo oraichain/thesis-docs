@@ -8,27 +8,70 @@
   "paths": {
     "/api/v1/integration/conversations": {
       "post": {
-        "tags": ["conversations"],
-        "summary": "Integration New Conversation",
+        "tags": ["conversations", "conversations"],
+        "summary": "Create New Conversation",
+        "description": "Creates a new conversation with customizable research mode, system prompt, and space association. Supports follow-up threads and MCP tool configuration.",
         "operationId": "integration_new_conversation_api_v1_integration_conversations_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreatNewConversationIntegrationRequest"
+                "$ref": "#/components/schemas/CreateNewConversationIntegrationRequest"
               }
             }
           },
           "required": true
         },
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "Create new conversation",
+            "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/conversations' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"initial_user_msg\": \"Whats the new DeFi meta recently that I can ape in?\",\n    \"research_mode\": \"deep_research\",\n    \"space_id\": 123,\n    \"system_prompt\": \"You are a DeFi gigachad who is always ahead of the new DeFi meta.\"\n  }'"
+          },
+          {
+            "lang": "python",
+            "label": "Create new conversation",
+            "source": "import requests\n\nurl = 'https://app-be.thesis.io/api/v1/integration/conversations'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n}\ndata = {\n    'initial_user_msg': 'Whats the new DeFi meta recently that I can ape in?',\n    'research_mode': 'deep_research',\n    'space_id': 123,\n    'system_prompt': 'You are a DeFi gigachad who is always ahead of the new DeFi meta.'\n}\n\nresponse = requests.post(url, headers=headers, json=data)\nprint(response.json())"
+          },
+          {
+            "lang": "typescript",
+            "label": "Create new conversation",
+            "source": "const response = await fetch('https://app-be.thesis.io/api/v1/integration/conversations', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    initial_user_msg: 'Whats the new DeFi meta recently that I can ape in?',\n    research_mode: 'deep_research',\n    space_id: 123,\n    system_prompt: 'You are a DeFi gigachad who is always ahead of the new DeFi meta.'\n  })\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Conversation created successfully",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationCreateResponse"
+                }
               }
             }
+          },
+          "400": {
+            "description": "Invalid request data or missing required fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
           },
           "422": {
             "description": "Validation Error",
@@ -39,14 +82,25 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     },
     "/api/v1/integration/conversations/{conversation_id}": {
       "get": {
-        "tags": ["conversations"],
-        "summary": "Integration Get Conversation",
+        "tags": ["conversations", "conversations"],
+        "summary": "Get Conversation Details",
+        "description": "Retrieves comprehensive details for a specific conversation including metadata, event history, and current status. Returns full conversation context with all messages and interactions.",
         "operationId": "integration_get_conversation_api_v1_integration_conversations__conversation_id__get",
         "parameters": [
           {
@@ -59,21 +113,50 @@
             }
           }
         ],
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "Get conversation details",
+            "source": "curl -X GET 'https://app-be.thesis.io/api/v1/integration/conversations/conv_abc123def456' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN'"
+          },
+          {
+            "lang": "python",
+            "label": "Get conversation details",
+            "source": "import requests\n\nconversation_id = 'conv_abc123def456'\nurl = f'https://app-be.thesis.io/api/v1/integration/conversations/{conversation_id}'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n}\n\nresponse = requests.get(url, headers=headers)\nprint(response.json())"
+          },
+          {
+            "lang": "typescript",
+            "label": "Get conversation details",
+            "source": "const conversationId = 'conv_abc123def456';\nconst response = await fetch(`https://app-be.thesis.io/api/v1/integration/conversations/${conversationId}`, {\n  method: 'GET',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n  }\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Conversation details retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/components/schemas/ConversationDetailInfo"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "title": "Response Integration Get Conversation Api V1 Integration Conversations  Conversation Id  Get"
+                  "$ref": "#/components/schemas/ConversationDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to access conversation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conversation not found or access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
                 }
               }
             }
@@ -87,14 +170,169 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/integration/conversations/join-conversation": {
+      "post": {
+        "tags": ["conversations", "conversations"],
+        "summary": "Join Existing Conversation",
+        "description": "Join an existing conversation using conversation ID and API key authentication. Allows real-time participation in ongoing conversations with streaming responses. The user prompt becomes the next message sent to the AI.",
+        "operationId": "join_conversation_api_v1_integration_conversations_join_conversation_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinConversationIntegrationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "Join existing conversation",
+            "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/conversations/join-conversation' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"conversation_id\": \"conv_abc123def456\",\n    \"system_prompt\": \"Continue as an expert software architect\",\n    \"user_prompt\": \"Please review the code we discussed earlier\",\n    \"research_mode\": \"deep_research\"\n  }'"
+          },
+          {
+            "lang": "python",
+            "label": "Join existing conversation",
+            "source": "import requests\n\nurl = 'https://app-be.thesis.io/api/v1/integration/conversations/join-conversation'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n}\ndata = {\n    'conversation_id': 'conv_abc123def456',\n    'system_prompt': 'Continue as an expert software architect',\n    'user_prompt': 'Please review the code we discussed earlier',\n    'research_mode': 'deep_research'\n}\n\nresponse = requests.post(url, headers=headers, json=data)\nprint(response.json())"
+          },
+          {
+            "lang": "typescript",
+            "label": "Join existing conversation",
+            "source": "const response = await fetch('https://app-be.thesis.io/api/v1/integration/conversations/join-conversation', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    conversation_id: 'conv_abc123def456',\n    system_prompt: 'Continue as an expert software architect',\n    user_prompt: 'Please review the code we discussed earlier',\n    research_mode: 'deep_research'\n  })\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully joined conversation with streaming response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "Server-Sent Events stream with real-time conversation updates. Events are serialized using event_to_dict() and sent as SSE format.",
+                  "examples": [
+                    {
+                      "id": 1,
+                      "timestamp": "2024-01-15T10:45:00.123Z",
+                      "source": "user",
+                      "message": "Please review this code",
+                      "action": "message",
+                      "args": {
+                        "content": "Please review this code",
+                        "wait_for_response": false
+                      }
+                    },
+                    {
+                      "id": 2,
+                      "timestamp": "2024-01-15T10:45:30.456Z",
+                      "source": "agent",
+                      "message": "I'll analyze the code for you...",
+                      "action": "message",
+                      "args": {
+                        "content": "I'll analyze the code for you. Let me start by examining the structure...",
+                        "wait_for_response": false
+                      }
+                    },
+                    {
+                      "id": 3,
+                      "timestamp": "2024-01-15T10:45:35.789Z",
+                      "source": "agent",
+                      "observation": "agent_state_changed",
+                      "content": "",
+                      "extras": {
+                        "agent_state": "RUNNING",
+                        "reason": "Starting code analysis"
+                      },
+                      "success": true
+                    },
+                    {
+                      "id": 4,
+                      "timestamp": "2024-01-15T10:45:45.012Z",
+                      "source": "agent",
+                      "action": "streaming_message",
+                      "args": {
+                        "message": "Looking at the function definitions, I can see several potential issues...",
+                        "finished": false
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required fields (conversation_id, system_prompt, research_mode, or user_prompt)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing Bearer token in Authorization header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conversation not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to establish streaming connection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     },
     "/api/v1/integration/spaces": {
       "get": {
-        "tags": ["spaces"],
-        "summary": "Get List Space",
+        "tags": ["spaces", "spaces"],
+        "summary": "Get List of Spaces",
+        "description": "Retrieves a paginated list of spaces accessible to the authenticated user. Supports filtering by title and pagination with offset/limit parameters.",
         "operationId": "get_list_space_api_v1_integration_spaces_get",
         "parameters": [
           {
@@ -134,25 +372,46 @@
             }
           }
         ],
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "Get list of spaces",
+            "source": "curl -X GET 'https://app-be.thesis.io/api/v1/integration/spaces?offset=0&limit=10&title=AI%20Research' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN'"
+          },
+          {
+            "lang": "python",
+            "label": "Get list of spaces",
+            "source": "import requests\n\nurl = 'https://app-be.thesis.io/api/v1/integration/spaces'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n}\nparams = {\n    'offset': 0,\n    'limit': 10,\n    'title': 'AI Research'\n}\n\nresponse = requests.get(url, headers=headers, params=params)\nprint(response.json())"
+          },
+          {
+            "lang": "typescript",
+            "label": "Get list of spaces",
+            "source": "const params = new URLSearchParams({\n  offset: '0',\n  limit: '10',\n  title: 'AI Research'\n});\n\nconst response = await fetch(`https://app-be.thesis.io/api/v1/integration/spaces?${params}`, {\n  method: 'GET',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n  }\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Spaces retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "additionalProperties": true
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "title": "Response Get List Space Api V1 Integration Spaces Get"
+                  "$ref": "#/components/schemas/SpaceListResponse"
                 }
               }
             }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
           },
           "422": {
             "description": "Validation Error",
@@ -163,14 +422,25 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     },
     "/api/v1/integration/spaces/{space_id}": {
       "get": {
-        "tags": ["spaces"],
-        "summary": "Get Space Detail",
+        "tags": ["spaces", "spaces"],
+        "summary": "Get Space Details",
+        "description": "Retrieves comprehensive details for a specific space including metadata, member information, and recent activity. Requires appropriate access permissions.",
         "operationId": "get_space_detail_api_v1_integration_spaces__space_id__get",
         "parameters": [
           {
@@ -183,22 +453,50 @@
             }
           }
         ],
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "Get space details",
+            "source": "curl -X GET 'https://app-be.thesis.io/api/v1/integration/spaces/space_123' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN'"
+          },
+          {
+            "lang": "python",
+            "label": "Get space details",
+            "source": "import requests\n\nspace_id = 'space_123'\nurl = f'https://app-be.thesis.io/api/v1/integration/spaces/{space_id}'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n}\n\nresponse = requests.get(url, headers=headers)\nprint(response.json())"
+          },
+          {
+            "lang": "typescript",
+            "label": "Get space details",
+            "source": "const spaceId = 'space_123';\nconst response = await fetch(`https://app-be.thesis.io/api/v1/integration/spaces/${spaceId}`, {\n  method: 'GET',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n  }\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Space details retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "additionalProperties": true
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "title": "Response Get Space Detail Api V1 Integration Spaces  Space Id  Get"
+                  "$ref": "#/components/schemas/SpaceDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Space not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
                 }
               }
             }
@@ -212,14 +510,25 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     },
     "/api/v1/integration/spaces/{space_id}/sections": {
       "get": {
-        "tags": ["spaces"],
+        "tags": ["spaces", "spaces"],
         "summary": "Get Space Sections",
+        "description": "Retrieves all sections within a specific space. Sections are organizational units within spaces that help categorize conversations and content. Requires valid space access permissions.",
         "operationId": "get_space_sections_api_v1_integration_spaces__space_id__sections_get",
         "parameters": [
           {
@@ -232,22 +541,50 @@
             }
           }
         ],
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "Get space sections",
+            "source": "curl -X GET 'https://app-be.thesis.io/api/v1/integration/spaces/space_123/sections' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN'"
+          },
+          {
+            "lang": "python",
+            "label": "Get space sections",
+            "source": "import requests\n\nspace_id = 'space_123'\nurl = f'https://app-be.thesis.io/api/v1/integration/spaces/{space_id}/sections'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n}\n\nresponse = requests.get(url, headers=headers)\nprint(response.json())"
+          },
+          {
+            "lang": "typescript",
+            "label": "Get space sections",
+            "source": "const spaceId = 'space_123';\nconst response = await fetch(`https://app-be.thesis.io/api/v1/integration/spaces/${spaceId}/sections`, {\n  method: 'GET',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n  }\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Space sections retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "additionalProperties": true
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "title": "Response Get Space Sections Api V1 Integration Spaces  Space Id  Sections Get"
+                  "$ref": "#/components/schemas/SpaceSectionsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Space not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
                 }
               }
             }
@@ -261,6 +598,190 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/integration/chat_researchs": {
+      "post": {
+        "tags": ["conversations", "conversations"],
+        "summary": "Thesis.io chat mode with Multi Web Search tool enabled",
+        "description": "Creates a new conversation optimized for Fast Multi Web Search.",
+        "operationId": "integration_new_chat_conversation_api_v1_integration_chat_researchs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChatConversationIntegrationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "Create chat conversation",
+            "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/chat_researchs' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"initial_user_msg\": \"Lets have a casual conversation about DeFi\",\n    \"system_prompt\": \"You are a friendly AI assistant who explains complex topics simply\"\n  }'"
+          },
+          {
+            "lang": "python",
+            "label": "Create chat conversation",
+            "source": "import requests\n\nurl = 'https://app-be.thesis.io/api/v1/integration/chat_researchs'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n}\ndata = {\n    'initial_user_msg': 'Lets have a casual conversation about DeFi',\n    'system_prompt': 'You are a friendly AI assistant who explains complex topics simply'\n}\n\nresponse = requests.post(url, headers=headers, json=data)\nprint(response.json())"
+          },
+          {
+            "lang": "typescript",
+            "label": "Create chat conversation",
+            "source": "const response = await fetch('https://app-be.thesis.io/api/v1/integration/chat_researchs', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    initial_user_msg: 'Lets have a casual conversation about DeFi',\n    system_prompt: 'You are a friendly AI assistant who explains complex topics simply'\n  })\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chat conversation created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid chat request data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/integration/deep_researchs": {
+      "post": {
+        "tags": ["conversations", "conversations"],
+        "summary": "Thesis.io deep research mode with curated data and customized DeFi tools.",
+        "description": "Creates a conversation specifically for DeFi research tasks.",
+        "operationId": "integration_new_deep_research_conversation_api_v1_integration_deep_researchs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDeepResearchConversationIntegrationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "Create deep research conversation",
+            "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/deep_researchs' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"initial_user_msg\": \"Research the latest developments in DeFi\",\n    \"system_prompt\": \"You are a thorough DeFi researcher who provides comprehensive analysis with citations\"\n  }'"
+          },
+          {
+            "lang": "python",
+            "label": "Create deep research conversation",
+            "source": "import requests\n\nurl = 'https://app-be.thesis.io/api/v1/integration/deep_researchs'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n}\ndata = {\n    'initial_user_msg': 'Research the latest developments in DeFi',\n    'system_prompt': 'You are a thorough DeFi researcher who provides comprehensive analysis with citations'\n}\n\nresponse = requests.post(url, headers=headers, json=data)\nprint(response.json())"
+          },
+          {
+            "lang": "typescript",
+            "label": "Create deep research conversation",
+            "source": "const response = await fetch('https://app-be.thesis.io/api/v1/integration/deep_researchs', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    initial_user_msg: 'Research the latest developments in DeFi',\n    system_prompt: 'You are a thorough DeFi researcher who provides comprehensive analysis with citations'\n  })\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deep research conversation created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid deep research request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required for research access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -268,31 +789,56 @@
   },
   "components": {
     "schemas": {
-      "ConversationDetailInfo": {
+      "ConversationCreateResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Response status, always 'ok' for successful creation",
+            "example": "ok"
+          },
+          "conversation_id": {
+            "type": "string",
+            "title": "Conversation Id",
+            "description": "Unique identifier for the created conversation",
+            "example": "conv_abc123def456"
+          }
+        },
+        "type": "object",
+        "required": ["status", "conversation_id"],
+        "title": "ConversationCreateResponse"
+      },
+      "ConversationDetailResponse": {
         "properties": {
           "conversation_id": {
             "type": "string",
-            "title": "Conversation Id"
+            "title": "Conversation Id",
+            "description": "Unique conversation identifier",
+            "example": "conv_abc123def456"
           },
           "title": {
             "type": "string",
-            "title": "Title"
-          },
-          "last_updated_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Updated At"
+            "title": "Title",
+            "description": "Conversation title",
+            "example": "Code Review Session"
           },
           "status": {
-            "$ref": "#/components/schemas/ConversationStatus",
-            "default": "STOPPED"
+            "type": "string",
+            "title": "Status",
+            "description": "Current conversation status",
+            "example": "RUNNING"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At",
+            "description": "ISO timestamp when conversation was created",
+            "example": "2024-01-15T10:30:00Z"
+          },
+          "last_updated_at": {
+            "type": "string",
+            "title": "Last Updated At",
+            "description": "ISO timestamp of last activity",
+            "example": "2024-01-15T11:45:00Z"
           },
           "selected_repository": {
             "anyOf": [
@@ -303,12 +849,9 @@
                 "type": "null"
               }
             ],
-            "title": "Selected Repository"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At"
+            "title": "Selected Repository",
+            "description": "Associated repository if any",
+            "example": "user/project-repo"
           },
           "research_mode": {
             "anyOf": [
@@ -319,29 +862,18 @@
                 "type": "null"
               }
             ],
-            "title": "Research Mode"
+            "title": "Research Mode",
+            "description": "Research mode used in conversation",
+            "example": "deep_research"
           },
           "events": {
-            "anyOf": [
-              {
-                "items": {
-                  "anyOf": [
-                    {
-                      "additionalProperties": true,
-                      "type": "object"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Events"
+            "items": {
+              "$ref": "#/components/schemas/ConversationEvent"
+            },
+            "type": "array",
+            "title": "Events",
+            "description": "List of conversation events/messages",
+            "default": []
           },
           "final_result": {
             "anyOf": [
@@ -356,19 +888,79 @@
                 "type": "null"
               }
             ],
-            "title": "Final Result"
+            "title": "Final Result",
+            "description": "Final result if conversation is completed"
           }
         },
         "type": "object",
-        "required": ["conversation_id", "title"],
-        "title": "ConversationDetailInfo"
+        "required": [
+          "conversation_id",
+          "title",
+          "status",
+          "created_at",
+          "last_updated_at",
+          "selected_repository",
+          "research_mode"
+        ],
+        "title": "ConversationDetailResponse"
       },
-      "ConversationStatus": {
-        "type": "string",
-        "enum": ["WARNING", "RUNNING", "FINISHED", "ERROR", "STOPPED"],
-        "title": "ConversationStatus"
+      "ConversationErrorResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Error status, always 'error' for failures",
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Human-readable error message",
+            "example": "Settings not found"
+          },
+          "msg_id": {
+            "type": "string",
+            "title": "Msg Id",
+            "description": "Machine-readable error code for categorization",
+            "example": "CONFIGURATION$SETTINGS_NOT_FOUND"
+          }
+        },
+        "type": "object",
+        "required": ["status", "message", "msg_id"],
+        "title": "ConversationErrorResponse"
       },
-      "CreatNewConversationIntegrationRequest": {
+      "ConversationEvent": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "title": "Action",
+            "description": "Type of action/event",
+            "example": "message"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "description": "Source of the event (user/agent)",
+            "example": "user"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Content of the message or action",
+            "example": "Please review this code"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp",
+            "description": "ISO timestamp when the event occurred",
+            "example": "2024-01-15T10:30:00Z"
+          }
+        },
+        "type": "object",
+        "required": ["action", "source", "message", "timestamp"],
+        "title": "ConversationEvent"
+      },
+      "CreateChatConversationIntegrationRequest": {
         "properties": {
           "initial_user_msg": {
             "anyOf": [
@@ -379,9 +971,11 @@
                 "type": "null"
               }
             ],
-            "title": "Initial User Msg"
+            "title": "Initial User Msg",
+            "description": "Initial message for the chat conversation",
+            "example": "Let's have a casual conversation about DeFi"
           },
-          "research_mode": {
+          "system_prompt": {
             "anyOf": [
               {
                 "type": "string"
@@ -390,42 +984,17 @@
                 "type": "null"
               }
             ],
-            "title": "Research Mode"
-          },
-          "space_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Space Id"
-          },
-          "space_section_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Space Section Id"
-          },
-          "thread_follow_up": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Thread Follow Up"
-          },
-          "followup_discover_id": {
+            "title": "System Prompt",
+            "description": "System prompt to set the AI's behavior in chat mode",
+            "example": "You are a friendly AI assistant who explains complex topics simply"
+          }
+        },
+        "type": "object",
+        "title": "CreateChatConversationIntegrationRequest"
+      },
+      "CreateDeepResearchConversationIntegrationRequest": {
+        "properties": {
+          "initial_user_msg": {
             "anyOf": [
               {
                 "type": "string"
@@ -434,7 +1003,9 @@
                 "type": "null"
               }
             ],
-            "title": "Followup Discover Id"
+            "title": "Initial User Msg",
+            "description": "Initial research query to begin deep analysis",
+            "example": "Research the latest developments in DeFi"
           },
           "mcp_disable": {
             "anyOf": [
@@ -448,7 +1019,8 @@
                 "type": "null"
               }
             ],
-            "title": "Mcp Disable"
+            "title": "Mcp Disable",
+            "description": "MCP tools to disable during deep research"
           },
           "system_prompt": {
             "anyOf": [
@@ -459,25 +1031,137 @@
                 "type": "null"
               }
             ],
-            "title": "System Prompt"
-          },
-          "image_urls": {
+            "title": "System Prompt",
+            "description": "System prompt for deep research mode behavior",
+            "example": "You are a thorough DeFi researcher who provides comprehensive analysis with citations"
+          }
+        },
+        "type": "object",
+        "title": "CreateDeepResearchConversationIntegrationRequest"
+      },
+      "CreateNewConversationIntegrationRequest": {
+        "properties": {
+          "initial_user_msg": {
             "anyOf": [
               {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
+                "type": "string"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Image Urls"
+            "title": "Initial User Msg",
+            "description": "Initial message to start the conversation",
+            "example": "What's the new DeFi meta recently that I can ape in?"
+          },
+          "research_mode": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResearchMode"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Research mode for the conversation",
+            "example": "deep_research"
+          },
+          "space_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Space Id",
+            "description": "Your space ID. You can find it via your created space",
+            "example": 123
+          },
+          "space_section_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Space Section Id",
+            "description": "Your space section ID. You can find it via your created space",
+            "example": 456
+          },
+          "thread_follow_up": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Thread Follow Up",
+            "description": "Thread ID for follow-up conversations",
+            "example": 789
+          },
+          "followup_discover_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Followup Discover Id",
+            "description": "Discovery ID for follow-up research",
+            "example": "discover_abc123"
+          },
+          "mcp_disable": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "boolean"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mcp Disable",
+            "description": "MCP tools to disable for this conversation"
+          },
+          "system_prompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "System Prompt",
+            "description": "Custom system prompt to guide the AI behavior",
+            "example": "You are a DeFi gigachad who's always ahead of the new DeFi meta."
           }
         },
         "type": "object",
-        "title": "CreatNewConversationIntegrationRequest"
+        "title": "CreateNewConversationIntegrationRequest"
+      },
+      "FastAPIErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "description": "Error details from FastAPI",
+            "example": "Unauthorized"
+          }
+        },
+        "type": "object",
+        "required": ["detail"],
+        "title": "FastAPIErrorResponse"
       },
       "HTTPValidationError": {
         "properties": {
@@ -491,6 +1175,477 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "JoinConversationIntegrationRequest": {
+        "properties": {
+          "conversation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Conversation Id",
+            "description": "ID of the existing conversation to join",
+            "example": "conv_abc123def456"
+          },
+          "system_prompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "System Prompt",
+            "description": "System prompt to apply when joining the conversation",
+            "example": "Continue as an expert software architect"
+          },
+          "user_prompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Prompt",
+            "description": "Message to send when joining the conversation",
+            "example": "Please review the code we discussed earlier"
+          },
+          "research_mode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Research Mode",
+            "description": "Research mode to use in the conversation",
+            "example": "deep_research"
+          }
+        },
+        "type": "object",
+        "title": "JoinConversationIntegrationRequest"
+      },
+      "PaginationInfo": {
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Number of records skipped",
+            "example": 0
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maximum number of records returned",
+            "example": 10
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total number of available records",
+            "example": 25
+          },
+          "has_next": {
+            "type": "boolean",
+            "title": "Has Next",
+            "description": "Whether more records are available",
+            "example": true
+          },
+          "has_previous": {
+            "type": "boolean",
+            "title": "Has Previous",
+            "description": "Whether previous records exist",
+            "example": false
+          }
+        },
+        "type": "object",
+        "required": ["offset", "limit", "total", "has_next", "has_previous"],
+        "title": "PaginationInfo"
+      },
+      "ResearchMode": {
+        "type": "string",
+        "enum": ["chat", "deep_research", "follow_up", "rerun_section"],
+        "title": "ResearchMode"
+      },
+      "SpaceDetail": {
+        "properties": {
+          "space_id": {
+            "type": "string",
+            "title": "Space Id",
+            "description": "Unique space identifier",
+            "example": "space_123"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "Space title",
+            "example": "AI Research Project"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Detailed description of the space",
+            "example": "Collaborative research space focused on machine learning algorithms and their applications"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At",
+            "description": "ISO timestamp when space was created",
+            "example": "2024-01-10T09:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "title": "Updated At",
+            "description": "ISO timestamp of last update",
+            "example": "2024-01-15T10:30:00Z"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/SpaceOwner",
+            "description": "Space owner information"
+          },
+          "members": {
+            "items": {
+              "$ref": "#/components/schemas/SpaceMember"
+            },
+            "type": "array",
+            "title": "Members",
+            "description": "List of space members",
+            "default": []
+          },
+          "visibility": {
+            "type": "string",
+            "title": "Visibility",
+            "description": "Space visibility setting",
+            "example": "private"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/SpaceSettings",
+            "description": "Space configuration settings"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/SpaceStats",
+            "description": "Space usage statistics"
+          }
+        },
+        "type": "object",
+        "required": [
+          "space_id",
+          "title",
+          "description",
+          "created_at",
+          "updated_at",
+          "owner",
+          "visibility",
+          "settings",
+          "stats"
+        ],
+        "title": "SpaceDetail"
+      },
+      "SpaceDetailResponse": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SpaceDetail",
+            "description": "Complete space information"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Response status message",
+            "example": "Get space detail success"
+          }
+        },
+        "type": "object",
+        "required": ["data", "status"],
+        "title": "SpaceDetailResponse"
+      },
+      "SpaceListItem": {
+        "properties": {
+          "space_id": {
+            "type": "string",
+            "title": "Space Id",
+            "description": "Unique identifier for the space",
+            "example": "space_123"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "Space title or name",
+            "example": "AI Research Project"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Description of the space's purpose",
+            "example": "Collaborative research on AI algorithms"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At",
+            "description": "ISO timestamp when space was created",
+            "example": "2024-01-10T09:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "title": "Updated At",
+            "description": "ISO timestamp of last space update",
+            "example": "2024-01-15T10:30:00Z"
+          },
+          "member_count": {
+            "type": "integer",
+            "title": "Member Count",
+            "description": "Number of members in the space",
+            "example": 5
+          },
+          "visibility": {
+            "type": "string",
+            "title": "Visibility",
+            "description": "Space visibility level",
+            "example": "private"
+          }
+        },
+        "type": "object",
+        "required": [
+          "space_id",
+          "title",
+          "description",
+          "created_at",
+          "updated_at",
+          "member_count",
+          "visibility"
+        ],
+        "title": "SpaceListItem"
+      },
+      "SpaceListResponse": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/SpaceListItem"
+            },
+            "type": "array",
+            "title": "Data",
+            "description": "List of spaces matching the request",
+            "default": []
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationInfo",
+            "description": "Pagination information for the results"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Response status message",
+            "example": "Get list spaces success"
+          }
+        },
+        "type": "object",
+        "required": ["pagination", "status"],
+        "title": "SpaceListResponse"
+      },
+      "SpaceMember": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id",
+            "description": "Unique user identifier",
+            "example": "user_456"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username",
+            "description": "Username of the member",
+            "example": "ai_researcher"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Member's role in the space",
+            "example": "contributor"
+          },
+          "joined_at": {
+            "type": "string",
+            "title": "Joined At",
+            "description": "ISO timestamp when user joined",
+            "example": "2024-01-11T10:00:00Z"
+          }
+        },
+        "type": "object",
+        "required": ["user_id", "username", "role", "joined_at"],
+        "title": "SpaceMember"
+      },
+      "SpaceOwner": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id",
+            "description": "Owner's unique identifier",
+            "example": "user_789"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username",
+            "description": "Owner's username",
+            "example": "research_lead"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name",
+            "description": "Owner's display name",
+            "example": "Dr. Smith"
+          }
+        },
+        "type": "object",
+        "required": ["user_id", "username", "display_name"],
+        "title": "SpaceOwner"
+      },
+      "SpaceSection": {
+        "properties": {
+          "section_id": {
+            "type": "string",
+            "title": "Section Id",
+            "description": "Unique section identifier",
+            "example": "section_001"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "Section title",
+            "example": "General Discussion"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Section description",
+            "example": "Main area for general research discussions"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At",
+            "description": "ISO timestamp when section was created",
+            "example": "2024-01-10T09:15:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "title": "Updated At",
+            "description": "ISO timestamp of last section activity",
+            "example": "2024-01-15T11:30:00Z"
+          },
+          "conversation_count": {
+            "type": "integer",
+            "title": "Conversation Count",
+            "description": "Number of conversations in this section",
+            "example": 8
+          },
+          "last_activity": {
+            "type": "string",
+            "title": "Last Activity",
+            "description": "ISO timestamp of last activity",
+            "example": "2024-01-15T10:45:00Z"
+          },
+          "order": {
+            "type": "integer",
+            "title": "Order",
+            "description": "Display order of the section",
+            "example": 1
+          },
+          "is_public": {
+            "type": "boolean",
+            "title": "Is Public",
+            "description": "Whether section is publicly accessible",
+            "example": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "section_id",
+          "title",
+          "description",
+          "created_at",
+          "updated_at",
+          "conversation_count",
+          "last_activity",
+          "order",
+          "is_public"
+        ],
+        "title": "SpaceSection"
+      },
+      "SpaceSectionsResponse": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/SpaceSection"
+            },
+            "type": "array",
+            "title": "Data",
+            "description": "List of sections in the space",
+            "default": []
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Response status message",
+            "example": "Get space sections success"
+          }
+        },
+        "type": "object",
+        "required": ["status"],
+        "title": "SpaceSectionsResponse"
+      },
+      "SpaceSettings": {
+        "properties": {
+          "allow_guest_access": {
+            "type": "boolean",
+            "title": "Allow Guest Access",
+            "description": "Whether guests can access the space",
+            "example": false
+          },
+          "moderation_enabled": {
+            "type": "boolean",
+            "title": "Moderation Enabled",
+            "description": "Whether content moderation is enabled",
+            "example": true
+          }
+        },
+        "type": "object",
+        "required": ["allow_guest_access", "moderation_enabled"],
+        "title": "SpaceSettings"
+      },
+      "SpaceStats": {
+        "properties": {
+          "total_conversations": {
+            "type": "integer",
+            "title": "Total Conversations",
+            "description": "Total number of conversations in space",
+            "example": 15
+          },
+          "active_conversations": {
+            "type": "integer",
+            "title": "Active Conversations",
+            "description": "Number of currently active conversations",
+            "example": 3
+          },
+          "total_messages": {
+            "type": "integer",
+            "title": "Total Messages",
+            "description": "Total number of messages across all conversations",
+            "example": 450
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_conversations",
+          "active_conversations",
+          "total_messages"
+        ],
+        "title": "SpaceStats"
       },
       "ValidationError": {
         "properties": {
