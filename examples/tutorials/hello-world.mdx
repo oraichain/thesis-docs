@@ -1,0 +1,210 @@
+---
+title: "Hello World with Thesis.io"
+description: "Make your first request to one of Thesis.io's API endpoints"
+---
+
+## Create and setup your API key
+
+<Card title="Get your Thesis.io API key" icon="key" horizontal href="https://app.thesis.io/settings" />
+
+<br />
+
+## Create a .env file
+
+Create a `.env` file in your project root and add your API key:
+
+```bash
+THESIS_SPACE_API_KEY=your api key without quotes
+```
+
+## Make an API request
+
+<Tabs>
+  <Tab title="Python">
+
+Install the required packages:
+
+```bash
+pip install requests python-dotenv
+```
+
+Create a new conversation:
+
+```python
+import os
+import requests
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+def create_conversation():
+    # Get API key from environment
+    api_key = os.getenv("THESIS_SPACE_API_KEY")
+    
+    if not api_key:
+        raise ValueError("Please set THESIS_SPACE_API_KEY environment variable")
+    
+    # API endpoint
+    url = "https://app-be.thesis.io/api/v1/integration/conversations"
+    
+    # Request headers
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Request payload
+    data = {
+        "initial_user_msg": "What are the latest trends in DeFi lending protocols?",
+        "research_mode": "deep_research",
+        "system_prompt": "You are a DeFi research assistant that provides comprehensive analysis."
+    }
+    
+    try:
+        print("Creating new conversation...")
+        response = requests.post(url, json=data, headers=headers)
+        
+        if response.status_code == 200:
+            result = response.json()
+            print("Conversation created successfully!")
+            print(f"Conversation ID: {result.get('conversation_id')}")
+            print(f"Status: {result.get('status')}")
+            return result
+        else:
+            print(f"Error {response.status_code}: {response.text}")
+            
+    except requests.RequestException as e:
+        print(f"Request failed: {e}")
+
+if __name__ == "__main__":
+    create_conversation()
+```
+
+  </Tab>
+  <Tab title="TypeScript">
+
+Install the required packages:
+
+```bash
+npm install axios dotenv
+npm install --save-dev @types/node typescript ts-node
+```
+
+```typescript
+import "dotenv/config";
+import axios, { AxiosResponse } from "axios";
+
+export interface ConversationRequest {
+  initial_user_msg?: string;
+  research_mode?: string;
+  space_id?: number;
+  space_section_id?: number;
+  thread_follow_up?: number;
+  followup_discover_id?: string;
+  mcp_disable?: Record<string, boolean>;
+  system_prompt?: string;
+  image_urls?: string[];
+}
+
+export interface ConversationResponse {
+  status: string;
+  conversation_id: string;
+}
+
+export interface ApiError {
+  detail: Array<{
+    type: string;
+    loc: Array<string | number>;
+    msg: string;
+    input: any;
+  }>;
+}
+
+export class ThesisApiClient {
+  private baseUrl =
+    process.env.THESIS_BASE_API_URL || "https://app-be.thesis.io";
+  private apiKey: string;
+
+  constructor(apiKey: string) {
+    this.apiKey = apiKey;
+  }
+
+  async createConversation(
+    request: ConversationRequest
+  ): Promise<ConversationResponse> {
+    console.log("request: ", JSON.stringify(request, null, 2));
+    try {
+      const response: AxiosResponse = await axios.post(
+        `${this.baseUrl}/api/v1/integration/conversations`,
+        request,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 422) {
+        const validationError: ApiError = error.response.data;
+        throw new Error(
+          `Validation Error: ${JSON.stringify(validationError.detail)}`
+        );
+      }
+      throw new Error(`API Error: ${error.message}`);
+    }
+  }
+}
+
+async function main() {
+  const token = process.env.THESIS_SPACE_API_KEY;
+
+  if (!token) {
+    console.error("Please set THESIS_SPACE_API_KEY environment variable");
+    process.exit(1);
+  }
+
+  const client = new ThesisApiClient(token);
+
+  const conversationRequest: ConversationRequest = {
+    initial_user_msg:
+      "What are the latest trends in DeFi lending protocols?",
+    research_mode: "deep_research",
+    system_prompt:
+      "You are a DeFi research assistant that provides comprehensive analysis.",
+  };
+
+  try {
+    console.log("Creating new conversation...");
+    const result = await client.createConversation(conversationRequest);
+    console.log("Conversation created successfully!");
+    console.log(`Conversation ID: ${result.conversation_id}`);
+    console.log(`Status: ${result.status}`);
+  } catch (error: any) {
+    console.error("Error:", error.message);
+    process.exit(1);
+  }
+}
+
+main();
+```
+
+  </Tab>
+  <Tab title="cURL">
+
+```bash
+curl -X POST 'https://app-be.thesis.io/api/v1/integration/conversations' \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "initial_user_msg": "What are the latest trends in DeFi lending protocols?",
+    "research_mode": "deep_research",
+    "system_prompt": "You are a DeFi research assistant that provides comprehensive analysis."
+  }'
+```
+
+  </Tab>
+</Tabs>
