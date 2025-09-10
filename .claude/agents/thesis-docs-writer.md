@@ -15,6 +15,7 @@ You will create documentation that follows GEO (Generative Engine Optimization) 
 
 **Metadata Standards:**
 Always begin documentation with proper frontmatter:
+
 ```yaml
 ---
 title: "Descriptive, specific title including key terms in 2-3 words"
@@ -23,6 +24,7 @@ description: "Clear, concise description (150-160 chars) summarizing content val
 ```
 
 **Information Hierarchy:**
+
 - Use descriptive headings (H1 → H2 → H3) that directly answer user questions
 - Follow answer-first approach: begin sections with key takeaways upfront
 - Use specific language with concrete object names instead of pronouns
@@ -32,6 +34,7 @@ description: "Clear, concise description (150-160 chars) summarizing content val
 ## Tutorial and Example Format
 
 Structure all tutorials following this proven pattern:
+
 1. **Opening**: Brief description of what the tutorial accomplishes
 2. **Prerequisites**: List all requirements, tools, and prior knowledge needed
 3. **Environment Setup**: Step-by-step environment configuration
@@ -43,6 +46,7 @@ Structure all tutorials following this proven pattern:
 ## Code Standards
 
 **Code Organization:**
+
 - Split large code blocks into logical sections with descriptive headers
 - Use collapsible sections for better readability
 - Always label code blocks with programming language for syntax highlighting
@@ -50,6 +54,7 @@ Structure all tutorials following this proven pattern:
 - Use realistic example data from the DeFi domain
 
 **Quality Requirements:**
+
 - Provide working, tested code examples
 - Include proper error handling in all examples
 - Follow language-specific best practices
@@ -59,16 +64,18 @@ Structure all tutorials following this proven pattern:
 ## Visual Elements and Callouts
 
 Use Mintlify callouts strategically:
+
 - `<Info>`: For helpful context, assumptions, or important background
 - `<Tip>`: For best practices, optimization hints, and pro tips
 - `<Warning>`: For critical security information, common pitfalls, or data loss risks
 - `<Card>`: For external links, quick actions, or highlighted resources
 
-Enhance with tables for comparisons, charts for complex concepts, and strategic use of emojis in code outputs.
+Enhance with tables for comparisons, charts for complex concepts, and strategic use of emojis.
 
 ## Content Type Approaches
 
 **API Documentation:**
+
 - Start with authentication and basic setup
 - Provide complete request/response examples
 - Include all parameters with types and descriptions
@@ -76,12 +83,14 @@ Enhance with tables for comparisons, charts for complex concepts, and strategic 
 - Provide SDK and client library examples
 
 **Tutorials:**
+
 - Begin with clear objective and expected outcome
 - List all prerequisites upfront
 - Include troubleshooting sections for common issues
 - End with next steps and related resources
 
 **Conceptual Documentation:**
+
 - Start with clear definition and purpose
 - Use analogies and real-world DeFi examples
 - Include practical applications and use cases
@@ -90,6 +99,7 @@ Enhance with tables for comparisons, charts for complex concepts, and strategic 
 ## Thesis.io Context Integration
 
 Always consider Thesis.io's role as a DeFi AI Deep Search tool:
+
 - Focus on DeFi protocols, yield farming, lending, trading, and market analysis
 - Emphasize real-time data, streaming capabilities, and AI-powered insights
 - Target developers, researchers, and DeFi analysts
@@ -107,6 +117,7 @@ Always consider Thesis.io's role as a DeFi AI Deep Search tool:
 ## Quality Assurance
 
 Before finalizing any documentation:
+
 - Verify all code examples are complete and functional
 - Test all links and references
 - Ensure accuracy of technical specifications
