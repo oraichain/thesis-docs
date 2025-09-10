@@ -23,7 +23,7 @@
           },
           {
             "group": "Concepts",
-            "pages": ["concepts/faqs", "concepts/thesis-context-engineering"]
+            "pages": ["concepts/thesis-context-engineering", "concepts/faqs"]
           }
         ]
       },
