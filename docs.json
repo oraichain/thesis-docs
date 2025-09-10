@@ -23,7 +23,7 @@
           },
           {
             "group": "Concepts",
-            "pages": ["concepts/how-thesis-works", "concepts/faqs"]
+            "pages": ["concepts/faqs", "concepts/thesis-context-engineering"]
           }
         ]
       },
@@ -33,7 +33,7 @@
           {
             "group": "Tutorials",
             "pages": [
-              "examples/tutorials/hello-world",
+              "examples/tutorials/create-new-conversation",
               "examples/tutorials/join-conversation"
             ]
           },
