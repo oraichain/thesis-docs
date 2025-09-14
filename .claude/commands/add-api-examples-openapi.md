@@ -49,7 +49,7 @@
   {
     "lang": "bash",
     "label": "Join existing conversation",
-    "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/conversations/join-conversation' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"conversation_id\": \"conv_abc123def456\",\n    \"system_prompt\": \"Continue as an expert software architect\",\n    \"user_prompt\": \"Please review the code we discussed earlier\",\n    \"research_mode\": \"deep_research\"\n  }'"
+    "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/conversations/join-conversation' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"conversation_id\": \"conv_abc123def456\",\n    \"system_prompt\": \"Continue as an expert software architect\",\n    \"user_prompt\": \"Please review the code we discussed earlier\",\n    \"research_mode\": \"deep_research\"\n  }' --no-buffer"
   },
   {
     "lang": "python",
@@ -174,4 +174,4 @@
 ]
 ```
 
-Fill the above x-codeSamples with their corresponding endpoints into openapi.json. The endpoints must match the endpoints in openapi.json.
+Fill the above x-codeSamples with their corresponding endpoints into openapi.json. The endpoints must match the endpoints in openapi.json. Requirement: MUST NOT change the content of the x-codeSamples elements.

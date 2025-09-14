@@ -39,7 +39,12 @@
           },
           {
             "group": "Live Demos",
-            "pages": ["examples/live-demos/token-signal-telegram"]
+            "pages": [
+              "examples/live-demos/token-signal-telegram",
+              "examples/live-demos/polymarket-predictions",
+              "examples/live-demos/tokenizing-your-news",
+              "examples/live-demos/universal-swap"
+            ]
           }
         ]
       }

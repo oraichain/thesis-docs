@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Thesis API",
-    "description": "Thesis API",
+    "title": "Thesis.io APIs",
+    "description": "Thesis.io provides comprehensive AI-powered research and conversation APIs for DeFi analysis and blockchain research. Create conversations with customizable research modes including chat, deep research, and specialized DeFi tools for real-time market analysis. Join existing conversations via streaming endpoints to participate in collaborative research sessions with advanced AI agents.",
     "version": "0.32.1"
   },
   "paths": {
@@ -12,6 +12,23 @@
         "summary": "Create New Conversation",
         "description": "Creates a new conversation with customizable research mode, system prompt, and space association. Supports follow-up threads and MCP tool configuration.",
         "operationId": "integration_new_conversation_api_v1_integration_conversations_post",
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "Create new conversation",
+            "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/conversations' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"initial_user_msg\": \"Whats the new DeFi meta recently that I can ape in?\",\n    \"research_mode\": \"deep_research\",\n    \"system_prompt\": \"You are a DeFi gigachad who is always ahead of the new DeFi meta.\"\n  }'"
+          },
+          {
+            "lang": "python",
+            "label": "Create new conversation",
+            "source": "import requests\n\nurl = 'https://app-be.thesis.io/api/v1/integration/conversations'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n}\ndata = {\n    'initial_user_msg': 'Whats the new DeFi meta recently that I can ape in?',\n    'research_mode': 'deep_research',\n    'system_prompt': 'You are a DeFi gigachad who is always ahead of the new DeFi meta.'\n}\n\nresponse = requests.post(url, headers=headers, json=data)\nprint(response.json())"
+          },
+          {
+            "lang": "typescript",
+            "label": "Create new conversation",
+            "source": "const response = await fetch('https://app-be.thesis.io/api/v1/integration/conversations', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    initial_user_msg: 'What\\'s the new DeFi meta recently that I can ape in?',\n    research_mode: 'deep_research',\n    space_id: 123,\n    system_prompt: 'You are a DeFi gigachad who\\'s always ahead of the new DeFi meta.'\n  })\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -22,23 +39,6 @@
           },
           "required": true
         },
-        "x-codeSamples": [
-          {
-            "lang": "bash",
-            "label": "Create new conversation",
-            "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/conversations' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"initial_user_msg\": \"Whats the new DeFi meta recently that I can ape in?\",\n    \"research_mode\": \"deep_research\",\n    \"space_id\": 123,\n    \"system_prompt\": \"You are a DeFi gigachad who is always ahead of the new DeFi meta.\"\n  }'"
-          },
-          {
-            "lang": "python",
-            "label": "Create new conversation",
-            "source": "import requests\n\nurl = 'https://app-be.thesis.io/api/v1/integration/conversations'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n}\ndata = {\n    'initial_user_msg': 'Whats the new DeFi meta recently that I can ape in?',\n    'research_mode': 'deep_research',\n    'space_id': 123,\n    'system_prompt': 'You are a DeFi gigachad who is always ahead of the new DeFi meta.'\n}\n\nresponse = requests.post(url, headers=headers, json=data)\nprint(response.json())"
-          },
-          {
-            "lang": "typescript",
-            "label": "Create new conversation",
-            "source": "const response = await fetch('https://app-be.thesis.io/api/v1/integration/conversations', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    initial_user_msg: 'Whats the new DeFi meta recently that I can ape in?',\n    research_mode: 'deep_research',\n    space_id: 123,\n    system_prompt: 'You are a DeFi gigachad who is always ahead of the new DeFi meta.'\n  })\n});\n\nconst data = await response.json();\nconsole.log(data);"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Conversation created successfully",
@@ -102,17 +102,6 @@
         "summary": "Get Conversation Details",
         "description": "Retrieves comprehensive details for a specific conversation including metadata, event history, and current status. Returns full conversation context with all messages and interactions.",
         "operationId": "integration_get_conversation_api_v1_integration_conversations__conversation_id__get",
-        "parameters": [
-          {
-            "name": "conversation_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Conversation Id"
-            }
-          }
-        ],
         "x-codeSamples": [
           {
             "lang": "bash",
@@ -128,6 +117,17 @@
             "lang": "typescript",
             "label": "Get conversation details",
             "source": "const conversationId = 'conv_abc123def456';\nconst response = await fetch(`https://app-be.thesis.io/api/v1/integration/conversations/${conversationId}`, {\n  method: 'GET',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n  }\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Conversation Id"
+            }
           }
         ],
         "responses": {
@@ -188,23 +188,13 @@
       "post": {
         "tags": ["conversations", "conversations"],
         "summary": "Join Existing Conversation",
-        "description": "Join an existing conversation using conversation ID and API key authentication. Allows real-time participation in ongoing conversations with streaming responses. The user prompt becomes the next message sent to the AI.",
+        "description": "Join an existing conversation using conversation ID and API key authentication. Allows real-time participation in ongoing conversations with streaming responses. The user prompt becomes the next message sent to the AI.\n\n**Important for streaming:** Use the `--no-buffer` flag with cURL to enable real-time streaming output.",
         "operationId": "join_conversation_api_v1_integration_conversations_join_conversation_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JoinConversationIntegrationRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "x-codeSamples": [
           {
             "lang": "bash",
             "label": "Join existing conversation",
-            "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/conversations/join-conversation' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"conversation_id\": \"conv_abc123def456\",\n    \"system_prompt\": \"Continue as an expert software architect\",\n    \"user_prompt\": \"Please review the code we discussed earlier\",\n    \"research_mode\": \"deep_research\"\n  }'"
+            "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/conversations/join-conversation' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"conversation_id\": \"conv_abc123def456\",\n    \"system_prompt\": \"Continue as an expert software architect\",\n    \"user_prompt\": \"Please review the code we discussed earlier\",\n    \"research_mode\": \"deep_research\"\n  }' --no-buffer"
           },
           {
             "lang": "python",
@@ -217,6 +207,16 @@
             "source": "const response = await fetch('https://app-be.thesis.io/api/v1/integration/conversations/join-conversation', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    conversation_id: 'conv_abc123def456',\n    system_prompt: 'Continue as an expert software architect',\n    user_prompt: 'Please review the code we discussed earlier',\n    research_mode: 'deep_research'\n  })\n});\n\nconst data = await response.json();\nconsole.log(data);"
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinConversationIntegrationRequest"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "Successfully joined conversation with streaming response",
@@ -227,47 +227,46 @@
                   "description": "Server-Sent Events stream with real-time conversation updates. Events are serialized using event_to_dict() and sent as SSE format.",
                   "examples": [
                     {
-                      "id": 1,
-                      "timestamp": "2024-01-15T10:45:00.123Z",
-                      "source": "user",
-                      "message": "Please review this code",
-                      "action": "message",
-                      "args": {
-                        "content": "Please review this code",
-                        "wait_for_response": false
+                      "type": "oh_event",
+                      "data": {
+                        "id": 1,
+                        "timestamp": "2024-01-15T10:45:00.123Z",
+                        "source": "user",
+                        "message": "Please review this code",
+                        "action": "message",
+                        "args": {
+                          "content": "Please review this code",
+                          "wait_for_response": false
+                        }
                       }
                     },
                     {
-                      "id": 2,
-                      "timestamp": "2024-01-15T10:45:30.456Z",
-                      "source": "agent",
-                      "message": "I'll analyze the code for you...",
-                      "action": "message",
-                      "args": {
-                        "content": "I'll analyze the code for you. Let me start by examining the structure...",
-                        "wait_for_response": false
+                      "type": "oh_event",
+                      "data": {
+                        "id": 2,
+                        "timestamp": "2024-01-15T10:45:30.456Z",
+                        "source": "agent",
+                        "message": "I'll analyze the code for you...",
+                        "action": "message",
+                        "args": {
+                          "content": "I'll analyze the code for you. Let me start by examining the structure...",
+                          "wait_for_response": false
+                        }
                       }
                     },
                     {
-                      "id": 3,
-                      "timestamp": "2024-01-15T10:45:35.789Z",
-                      "source": "agent",
-                      "observation": "agent_state_changed",
-                      "content": "",
-                      "extras": {
-                        "agent_state": "RUNNING",
-                        "reason": "Starting code analysis"
-                      },
-                      "success": true
-                    },
-                    {
-                      "id": 4,
-                      "timestamp": "2024-01-15T10:45:45.012Z",
-                      "source": "agent",
-                      "action": "streaming_message",
-                      "args": {
-                        "message": "Looking at the function definitions, I can see several potential issues...",
-                        "finished": false
+                      "type": "oh_event",
+                      "data": {
+                        "id": 3,
+                        "timestamp": "2024-01-15T10:45:35.789Z",
+                        "source": "agent",
+                        "observation": "agent_state_changed",
+                        "content": "",
+                        "extras": {
+                          "agent_state": "RUNNING",
+                          "reason": "Starting code analysis"
+                        },
+                        "success": true
                       }
                     }
                   ]
@@ -334,6 +333,23 @@
         "summary": "Get List of Spaces",
         "description": "Retrieves a paginated list of spaces accessible to the authenticated user. Supports filtering by title and pagination with offset/limit parameters.",
         "operationId": "get_list_space_api_v1_integration_spaces_get",
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "Get list of spaces",
+            "source": "curl -X GET 'https://app-be.thesis.io/api/v1/integration/spaces?offset=0&limit=10&title=AI%20Research' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN'"
+          },
+          {
+            "lang": "python",
+            "label": "Get list of spaces",
+            "source": "import requests\n\nurl = 'https://app-be.thesis.io/api/v1/integration/spaces'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n}\nparams = {\n    'offset': 0,\n    'limit': 10,\n    'title': 'AI Research'\n}\n\nresponse = requests.get(url, headers=headers, params=params)\nprint(response.json())"
+          },
+          {
+            "lang": "typescript",
+            "label": "Get list of spaces",
+            "source": "const params = new URLSearchParams({\n  offset: '0',\n  limit: '10',\n  title: 'AI Research'\n});\n\nconst response = await fetch(`https://app-be.thesis.io/api/v1/integration/spaces?${params}`, {\n  method: 'GET',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n  }\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
         "parameters": [
           {
             "name": "offset",
@@ -370,23 +386,6 @@
               ],
               "title": "Title"
             }
-          }
-        ],
-        "x-codeSamples": [
-          {
-            "lang": "bash",
-            "label": "Get list of spaces",
-            "source": "curl -X GET 'https://app-be.thesis.io/api/v1/integration/spaces?offset=0&limit=10&title=AI%20Research' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN'"
-          },
-          {
-            "lang": "python",
-            "label": "Get list of spaces",
-            "source": "import requests\n\nurl = 'https://app-be.thesis.io/api/v1/integration/spaces'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n}\nparams = {\n    'offset': 0,\n    'limit': 10,\n    'title': 'AI Research'\n}\n\nresponse = requests.get(url, headers=headers, params=params)\nprint(response.json())"
-          },
-          {
-            "lang": "typescript",
-            "label": "Get list of spaces",
-            "source": "const params = new URLSearchParams({\n  offset: '0',\n  limit: '10',\n  title: 'AI Research'\n});\n\nconst response = await fetch(`https://app-be.thesis.io/api/v1/integration/spaces?${params}`, {\n  method: 'GET',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n  }\n});\n\nconst data = await response.json();\nconsole.log(data);"
           }
         ],
         "responses": {
@@ -442,17 +441,6 @@
         "summary": "Get Space Details",
         "description": "Retrieves comprehensive details for a specific space including metadata, member information, and recent activity. Requires appropriate access permissions.",
         "operationId": "get_space_detail_api_v1_integration_spaces__space_id__get",
-        "parameters": [
-          {
-            "name": "space_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Space Id"
-            }
-          }
-        ],
         "x-codeSamples": [
           {
             "lang": "bash",
@@ -468,6 +456,17 @@
             "lang": "typescript",
             "label": "Get space details",
             "source": "const spaceId = 'space_123';\nconst response = await fetch(`https://app-be.thesis.io/api/v1/integration/spaces/${spaceId}`, {\n  method: 'GET',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n  }\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "space_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Space Id"
+            }
           }
         ],
         "responses": {
@@ -530,17 +529,6 @@
         "summary": "Get Space Sections",
         "description": "Retrieves all sections within a specific space. Sections are organizational units within spaces that help categorize conversations and content. Requires valid space access permissions.",
         "operationId": "get_space_sections_api_v1_integration_spaces__space_id__sections_get",
-        "parameters": [
-          {
-            "name": "space_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Space Id"
-            }
-          }
-        ],
         "x-codeSamples": [
           {
             "lang": "bash",
@@ -556,6 +544,17 @@
             "lang": "typescript",
             "label": "Get space sections",
             "source": "const spaceId = 'space_123';\nconst response = await fetch(`https://app-be.thesis.io/api/v1/integration/spaces/${spaceId}/sections`, {\n  method: 'GET',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN'\n  }\n});\n\nconst data = await response.json();\nconsole.log(data);"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "space_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Space Id"
+            }
           }
         ],
         "responses": {
@@ -618,16 +617,6 @@
         "summary": "Thesis.io chat mode with Multi Web Search tool enabled",
         "description": "Creates a new conversation optimized for Fast Multi Web Search.",
         "operationId": "integration_new_chat_conversation_api_v1_integration_chat_researchs_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateChatConversationIntegrationRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "x-codeSamples": [
           {
             "lang": "bash",
@@ -645,6 +634,16 @@
             "source": "const response = await fetch('https://app-be.thesis.io/api/v1/integration/chat_researchs', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    initial_user_msg: 'Lets have a casual conversation about DeFi',\n    system_prompt: 'You are a friendly AI assistant who explains complex topics simply'\n  })\n});\n\nconst data = await response.json();\nconsole.log(data);"
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChatConversationIntegrationRequest"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "Chat conversation created successfully",
@@ -705,16 +704,6 @@
         "summary": "Thesis.io deep research mode with curated data and customized DeFi tools.",
         "description": "Creates a conversation specifically for DeFi research tasks.",
         "operationId": "integration_new_deep_research_conversation_api_v1_integration_deep_researchs_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateDeepResearchConversationIntegrationRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "x-codeSamples": [
           {
             "lang": "bash",
@@ -732,6 +721,16 @@
             "source": "const response = await fetch('https://app-be.thesis.io/api/v1/integration/deep_researchs', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    initial_user_msg: 'Research the latest developments in DeFi',\n    system_prompt: 'You are a thorough DeFi researcher who provides comprehensive analysis with citations'\n  })\n});\n\nconst data = await response.json();\nconsole.log(data);"
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDeepResearchConversationIntegrationRequest"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "Deep research conversation created successfully",
@@ -867,13 +866,20 @@
             "example": "deep_research"
           },
           "events": {
-            "items": {
-              "$ref": "#/components/schemas/ConversationEvent"
-            },
-            "type": "array",
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Events",
-            "description": "List of conversation events/messages",
-            "default": []
+            "description": "List of conversation events/messages"
           },
           "final_result": {
             "anyOf": [
@@ -928,37 +934,6 @@
         "type": "object",
         "required": ["status", "message", "msg_id"],
         "title": "ConversationErrorResponse"
-      },
-      "ConversationEvent": {
-        "properties": {
-          "action": {
-            "type": "string",
-            "title": "Action",
-            "description": "Type of action/event",
-            "example": "message"
-          },
-          "source": {
-            "type": "string",
-            "title": "Source",
-            "description": "Source of the event (user/agent)",
-            "example": "user"
-          },
-          "message": {
-            "type": "string",
-            "title": "Message",
-            "description": "Content of the message or action",
-            "example": "Please review this code"
-          },
-          "timestamp": {
-            "type": "string",
-            "title": "Timestamp",
-            "description": "ISO timestamp when the event occurred",
-            "example": "2024-01-15T10:30:00Z"
-          }
-        },
-        "type": "object",
-        "required": ["action", "source", "message", "timestamp"],
-        "title": "ConversationEvent"
       },
       "CreateChatConversationIntegrationRequest": {
         "properties": {
@@ -1234,41 +1209,150 @@
         "type": "object",
         "title": "JoinConversationIntegrationRequest"
       },
+      "Member": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Member's unique identifier",
+            "example": "1587"
+          },
+          "spaceId": {
+            "type": "string",
+            "title": "Spaceid",
+            "description": "Space ID",
+            "example": "868"
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid",
+            "description": "User ID",
+            "example": "220"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role",
+            "description": "Member role",
+            "example": 1
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status",
+            "description": "Member status",
+            "example": 1
+          },
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Createdat",
+            "description": "Member creation timestamp",
+            "example": "2025-09-10T07:51:19.525Z"
+          },
+          "updatedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updatedat",
+            "description": "Member update timestamp",
+            "example": "2025-09-10T07:51:19.525Z"
+          },
+          "user": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/User"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "User details"
+          }
+        },
+        "type": "object",
+        "required": ["id", "spaceId", "userId"],
+        "title": "Member"
+      },
       "PaginationInfo": {
         "properties": {
           "offset": {
-            "type": "integer",
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Offset",
             "description": "Number of records skipped",
             "example": 0
           },
           "limit": {
-            "type": "integer",
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Limit",
             "description": "Maximum number of records returned",
             "example": 10
           },
           "total": {
-            "type": "integer",
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Total",
             "description": "Total number of available records",
             "example": 25
           },
-          "has_next": {
-            "type": "boolean",
-            "title": "Has Next",
+          "has_more": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has More",
             "description": "Whether more records are available",
             "example": true
-          },
-          "has_previous": {
-            "type": "boolean",
-            "title": "Has Previous",
-            "description": "Whether previous records exist",
-            "example": false
           }
         },
         "type": "object",
-        "required": ["offset", "limit", "total", "has_next", "has_previous"],
         "title": "PaginationInfo"
       },
       "ResearchMode": {
@@ -1276,84 +1360,793 @@
         "enum": ["chat", "deep_research", "follow_up", "rerun_section"],
         "title": "ResearchMode"
       },
-      "SpaceDetail": {
+      "Space": {
         "properties": {
-          "space_id": {
+          "id": {
             "type": "string",
-            "title": "Space Id",
-            "description": "Unique space identifier",
-            "example": "space_123"
+            "title": "Id",
+            "description": "Space ID",
+            "example": "868"
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid",
+            "description": "User ID",
+            "example": "220"
           },
           "title": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Title",
             "description": "Space title",
-            "example": "AI Research Project"
+            "example": "New Space"
           },
           "description": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Description",
-            "description": "Detailed description of the space",
-            "example": "Collaborative research space focused on machine learning algorithms and their applications"
+            "description": "Space description",
+            "example": ""
           },
-          "created_at": {
-            "type": "string",
-            "title": "Created At",
-            "description": "ISO timestamp when space was created",
-            "example": "2024-01-10T09:00:00Z"
+          "datasetId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Datasetid",
+            "description": "Dataset ID",
+            "example": "1234567890"
           },
-          "updated_at": {
-            "type": "string",
-            "title": "Updated At",
-            "description": "ISO timestamp of last update",
-            "example": "2024-01-15T10:30:00Z"
+          "datasetName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Datasetname",
+            "description": "Dataset name",
+            "example": "220-1234567890"
           },
-          "owner": {
-            "$ref": "#/components/schemas/SpaceOwner",
-            "description": "Space owner information"
+          "emoji": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Emoji",
+            "description": "Space emoji",
+            "example": ""
           },
-          "members": {
-            "items": {
-              "$ref": "#/components/schemas/SpaceMember"
-            },
-            "type": "array",
-            "title": "Members",
-            "description": "List of space members",
-            "default": []
+          "customInstruction": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Custominstruction",
+            "description": "Custom instruction",
+            "example": ""
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category",
+            "description": "Space category",
+            "example": "other"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status",
+            "description": "Space status",
+            "example": 1
           },
           "visibility": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Visibility",
-            "description": "Space visibility setting",
-            "example": "private"
+            "description": "Space visibility",
+            "example": 0
           },
-          "settings": {
-            "$ref": "#/components/schemas/SpaceSettings",
-            "description": "Space configuration settings"
+          "memberCount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Membercount",
+            "description": "Member count",
+            "example": 1
           },
-          "stats": {
-            "$ref": "#/components/schemas/SpaceStats",
-            "description": "Space usage statistics"
+          "followerCount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Followercount",
+            "description": "Follower count",
+            "example": 0
+          },
+          "popularityScore": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Popularityscore",
+            "description": "Popularity score",
+            "example": 0
+          },
+          "lastActivityAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastactivityat",
+            "description": "Last activity timestamp",
+            "example": "2025-09-10T07:51:19.519Z"
+          },
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Createdat",
+            "description": "Creation timestamp",
+            "example": "2025-09-10T07:51:19.519Z"
+          },
+          "updatedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updatedat",
+            "description": "Update timestamp",
+            "example": "2025-09-12T02:21:58.501Z"
+          },
+          "datasetCount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Datasetcount",
+            "description": "Dataset count",
+            "example": 0
+          },
+          "totalResearch": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Totalresearch",
+            "description": "Total research count",
+            "example": 2
+          },
+          "systemPrompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Systemprompt",
+            "description": "System prompt",
+            "example": ""
+          },
+          "basicPrompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basicprompt",
+            "description": "Basic prompt",
+            "example": ""
+          },
+          "viewCount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Viewcount",
+            "description": "View count",
+            "example": 7
+          },
+          "coverUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coverurl",
+            "description": "Cover URL",
+            "example": "https://pbs.png"
+          },
+          "uuid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uuid",
+            "description": "Space UUID",
+            "example": "THESISSPACE1234567890"
+          },
+          "avatarUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatarurl",
+            "description": "Avatar URL"
+          },
+          "social": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Social",
+            "description": "Social links"
+          },
+          "spaceType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spacetype",
+            "description": "Space type"
+          },
+          "inCampaign": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Incampaign",
+            "description": "In campaign",
+            "example": false
+          },
+          "user": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/User"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "User details"
+          },
+          "telegramGroup": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TelegramGroup"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Telegram group"
           }
         },
         "type": "object",
-        "required": [
-          "space_id",
-          "title",
-          "description",
-          "created_at",
-          "updated_at",
-          "owner",
-          "visibility",
-          "settings",
-          "stats"
-        ],
+        "required": ["id", "userId"],
+        "title": "Space"
+      },
+      "SpaceDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Unique space identifier",
+            "example": "868"
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid",
+            "description": "Owner user ID",
+            "example": "220"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title",
+            "description": "Space title",
+            "example": "New Space"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Space description",
+            "example": ""
+          },
+          "datasetId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Datasetid",
+            "description": "Dataset ID",
+            "example": "1234567890"
+          },
+          "datasetName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Datasetname",
+            "description": "Dataset name",
+            "example": "220-1234567890"
+          },
+          "emoji": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Emoji",
+            "description": "Space emoji",
+            "example": ""
+          },
+          "customInstruction": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Custominstruction",
+            "description": "Custom instruction",
+            "example": ""
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category",
+            "description": "Space category",
+            "example": "other"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status",
+            "description": "Space status",
+            "example": 1
+          },
+          "visibility": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visibility",
+            "description": "Space visibility",
+            "example": 0
+          },
+          "memberCount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Membercount",
+            "description": "Number of members",
+            "example": 1
+          },
+          "followerCount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Followercount",
+            "description": "Number of followers",
+            "example": 0
+          },
+          "popularityScore": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Popularityscore",
+            "description": "Popularity score",
+            "example": 0
+          },
+          "lastActivityAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastactivityat",
+            "description": "Last activity timestamp",
+            "example": "2025-09-10T07:51:19.519Z"
+          },
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Createdat",
+            "description": "Creation timestamp",
+            "example": "2025-09-10T07:51:19.519Z"
+          },
+          "updatedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updatedat",
+            "description": "Update timestamp",
+            "example": "2025-09-12T02:21:58.501Z"
+          },
+          "datasetCount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Datasetcount",
+            "description": "Dataset count",
+            "example": 0
+          },
+          "totalResearch": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Totalresearch",
+            "description": "Total research count",
+            "example": 2
+          },
+          "systemPrompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Systemprompt",
+            "description": "System prompt",
+            "example": ""
+          },
+          "basicPrompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basicprompt",
+            "description": "Basic prompt",
+            "example": ""
+          },
+          "viewCount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Viewcount",
+            "description": "View count",
+            "example": 7
+          },
+          "coverUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coverurl",
+            "description": "Cover image URL",
+            "example": "https://pbs.png"
+          },
+          "uuid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uuid",
+            "description": "Space UUID",
+            "example": "THESISSPACE1234567890"
+          },
+          "avatarUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatarurl",
+            "description": "Avatar URL"
+          },
+          "social": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Social",
+            "description": "Social links"
+          },
+          "spaceType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spacetype",
+            "description": "Space type"
+          },
+          "inCampaign": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Incampaign",
+            "description": "In campaign status",
+            "example": false
+          },
+          "user": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/User"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "User details"
+          },
+          "member": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Member"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Member details"
+          },
+          "telegramGroupDetail": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TelegramGroupDetail"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Telegram group details"
+          },
+          "telegramGroup": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telegramgroup",
+            "description": "Telegram group link",
+            "example": "https://t.me/+1234567890"
+          }
+        },
+        "type": "object",
+        "required": ["id", "userId"],
         "title": "SpaceDetail"
       },
       "SpaceDetailResponse": {
         "properties": {
           "data": {
-            "$ref": "#/components/schemas/SpaceDetail",
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SpaceDetail"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "description": "Complete space information"
           },
           "status": {
@@ -1364,64 +2157,106 @@
           }
         },
         "type": "object",
-        "required": ["data", "status"],
+        "required": ["status"],
         "title": "SpaceDetailResponse"
       },
       "SpaceListItem": {
         "properties": {
-          "space_id": {
+          "id": {
             "type": "string",
-            "title": "Space Id",
-            "description": "Unique identifier for the space",
-            "example": "space_123"
+            "title": "Id",
+            "description": "Unique identifier for the member",
+            "example": "1587"
           },
-          "title": {
+          "spaceId": {
             "type": "string",
-            "title": "Title",
-            "description": "Space title or name",
-            "example": "AI Research Project"
+            "title": "Spaceid",
+            "description": "Space ID",
+            "example": "868"
           },
-          "description": {
+          "userId": {
             "type": "string",
-            "title": "Description",
-            "description": "Description of the space's purpose",
-            "example": "Collaborative research on AI algorithms"
+            "title": "Userid",
+            "description": "User ID",
+            "example": "220"
           },
-          "created_at": {
-            "type": "string",
-            "title": "Created At",
-            "description": "ISO timestamp when space was created",
-            "example": "2024-01-10T09:00:00Z"
+          "role": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role",
+            "description": "Member role",
+            "example": 1
           },
-          "updated_at": {
-            "type": "string",
-            "title": "Updated At",
-            "description": "ISO timestamp of last space update",
-            "example": "2024-01-15T10:30:00Z"
+          "status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status",
+            "description": "Member status",
+            "example": 1
           },
-          "member_count": {
-            "type": "integer",
-            "title": "Member Count",
-            "description": "Number of members in the space",
-            "example": 5
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Createdat",
+            "description": "Creation timestamp",
+            "example": "2025-09-10T07:51:19.525Z"
           },
-          "visibility": {
-            "type": "string",
-            "title": "Visibility",
-            "description": "Space visibility level",
-            "example": "private"
+          "updatedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updatedat",
+            "description": "Update timestamp",
+            "example": "2025-09-10T07:51:19.525Z"
+          },
+          "space": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Space"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Space details"
+          },
+          "user": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/User"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "User details"
           }
         },
         "type": "object",
-        "required": [
-          "space_id",
-          "title",
-          "description",
-          "created_at",
-          "updated_at",
-          "member_count",
-          "visibility"
-        ],
+        "required": ["id", "spaceId", "userId"],
         "title": "SpaceListItem"
       },
       "SpaceListResponse": {
@@ -1436,7 +2271,14 @@
             "default": []
           },
           "pagination": {
-            "$ref": "#/components/schemas/PaginationInfo",
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationInfo"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "description": "Pagination information for the results"
           },
           "status": {
@@ -1447,143 +2289,217 @@
           }
         },
         "type": "object",
-        "required": ["pagination", "status"],
+        "required": ["status"],
         "title": "SpaceListResponse"
-      },
-      "SpaceMember": {
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "title": "User Id",
-            "description": "Unique user identifier",
-            "example": "user_456"
-          },
-          "username": {
-            "type": "string",
-            "title": "Username",
-            "description": "Username of the member",
-            "example": "ai_researcher"
-          },
-          "role": {
-            "type": "string",
-            "title": "Role",
-            "description": "Member's role in the space",
-            "example": "contributor"
-          },
-          "joined_at": {
-            "type": "string",
-            "title": "Joined At",
-            "description": "ISO timestamp when user joined",
-            "example": "2024-01-11T10:00:00Z"
-          }
-        },
-        "type": "object",
-        "required": ["user_id", "username", "role", "joined_at"],
-        "title": "SpaceMember"
-      },
-      "SpaceOwner": {
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "title": "User Id",
-            "description": "Owner's unique identifier",
-            "example": "user_789"
-          },
-          "username": {
-            "type": "string",
-            "title": "Username",
-            "description": "Owner's username",
-            "example": "research_lead"
-          },
-          "display_name": {
-            "type": "string",
-            "title": "Display Name",
-            "description": "Owner's display name",
-            "example": "Dr. Smith"
-          }
-        },
-        "type": "object",
-        "required": ["user_id", "username", "display_name"],
-        "title": "SpaceOwner"
       },
       "SpaceSection": {
         "properties": {
-          "section_id": {
+          "id": {
             "type": "string",
-            "title": "Section Id",
+            "title": "Id",
             "description": "Unique section identifier",
-            "example": "section_001"
+            "example": "555"
           },
-          "title": {
+          "spaceId": {
             "type": "string",
-            "title": "Title",
-            "description": "Section title",
-            "example": "General Discussion"
+            "title": "Spaceid",
+            "description": "Space identifier",
+            "example": "724"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "Section name",
+            "example": "Overview"
           },
           "description": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Description",
             "description": "Section description",
-            "example": "Main area for general research discussions"
+            "example": ""
           },
-          "created_at": {
+          "prompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt",
+            "description": "Section prompt",
+            "example": "Create a chart..."
+          },
+          "conversationId": {
             "type": "string",
-            "title": "Created At",
-            "description": "ISO timestamp when section was created",
-            "example": "2024-01-10T09:15:00Z"
+            "title": "Conversationid",
+            "description": "Conversation ID",
+            "example": "abc123"
           },
-          "updated_at": {
-            "type": "string",
-            "title": "Updated At",
-            "description": "ISO timestamp of last section activity",
-            "example": "2024-01-15T11:30:00Z"
+          "outputType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outputtype",
+            "description": "Output type",
+            "example": "bar_chart"
           },
-          "conversation_count": {
-            "type": "integer",
-            "title": "Conversation Count",
-            "description": "Number of conversations in this section",
-            "example": 8
+          "mcpDisable": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mcpdisable",
+            "description": "Disabled MCP services"
           },
-          "last_activity": {
-            "type": "string",
-            "title": "Last Activity",
-            "description": "ISO timestamp of last activity",
-            "example": "2024-01-15T10:45:00Z"
+          "dataSource": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Datasource",
+            "description": "Data sources"
           },
-          "order": {
-            "type": "integer",
-            "title": "Order",
-            "description": "Display order of the section",
+          "x": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "X",
+            "description": "X data"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status",
+            "description": "Section status",
             "example": 1
           },
-          "is_public": {
-            "type": "boolean",
-            "title": "Is Public",
-            "description": "Whether section is publicly accessible",
-            "example": true
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Createdat",
+            "description": "Creation timestamp",
+            "example": "2025-08-28T10:30:17.926Z"
+          },
+          "updatedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updatedat",
+            "description": "Update timestamp",
+            "example": "2025-09-10T11:04:56.465Z"
+          },
+          "interval": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Interval",
+            "description": "Refresh interval"
+          },
+          "lastRefreshedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastrefreshedat",
+            "description": "Last refresh timestamp"
+          },
+          "autoRefresh": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Autorefresh",
+            "description": "Auto refresh enabled",
+            "example": false
           }
         },
         "type": "object",
-        "required": [
-          "section_id",
-          "title",
-          "description",
-          "created_at",
-          "updated_at",
-          "conversation_count",
-          "last_activity",
-          "order",
-          "is_public"
-        ],
+        "required": ["id", "spaceId", "conversationId"],
         "title": "SpaceSection"
       },
       "SpaceSectionsResponse": {
         "properties": {
           "data": {
-            "items": {
-              "$ref": "#/components/schemas/SpaceSection"
-            },
-            "type": "array",
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SpaceSection"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Data",
             "description": "List of sections in the space",
             "default": []
@@ -1599,53 +2515,328 @@
         "required": ["status"],
         "title": "SpaceSectionsResponse"
       },
-      "SpaceSettings": {
+      "TelegramGroup": {
         "properties": {
-          "allow_guest_access": {
-            "type": "boolean",
-            "title": "Allow Guest Access",
-            "description": "Whether guests can access the space",
-            "example": false
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Telegram group ID",
+            "example": "180"
           },
-          "moderation_enabled": {
-            "type": "boolean",
-            "title": "Moderation Enabled",
-            "description": "Whether content moderation is enabled",
-            "example": true
+          "groupTitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grouptitle",
+            "description": "Group title",
+            "example": "Space new-space-1234567890"
+          },
+          "groupInviteLink": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Groupinvitelink",
+            "description": "Group invite link",
+            "example": "https://t.me/+1234567890"
+          },
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Createdat",
+            "description": "Creation timestamp",
+            "example": "2025-09-10T07:51:19.527Z"
+          },
+          "updatedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updatedat",
+            "description": "Update timestamp",
+            "example": "2025-09-10T07:51:20.060Z"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status",
+            "description": "Group status",
+            "example": 1
           }
         },
         "type": "object",
-        "required": ["allow_guest_access", "moderation_enabled"],
-        "title": "SpaceSettings"
+        "required": ["id"],
+        "title": "TelegramGroup"
       },
-      "SpaceStats": {
+      "TelegramGroupDetail": {
         "properties": {
-          "total_conversations": {
-            "type": "integer",
-            "title": "Total Conversations",
-            "description": "Total number of conversations in space",
-            "example": 15
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Telegram group ID",
+            "example": "180"
           },
-          "active_conversations": {
-            "type": "integer",
-            "title": "Active Conversations",
-            "description": "Number of currently active conversations",
-            "example": 3
+          "chatId": {
+            "type": "string",
+            "title": "Chatid",
+            "description": "Telegram chat ID",
+            "example": "1234567890"
           },
-          "total_messages": {
-            "type": "integer",
-            "title": "Total Messages",
-            "description": "Total number of messages across all conversations",
-            "example": 450
+          "spaceId": {
+            "type": "string",
+            "title": "Spaceid",
+            "description": "Space ID",
+            "example": "868"
+          },
+          "groupTitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grouptitle",
+            "description": "Telegram group title",
+            "example": "Space new-space-1234567890"
+          },
+          "groupInviteLink": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Groupinvitelink",
+            "description": "Telegram group invite link",
+            "example": "https://t.me/+1234567890"
+          },
+          "errorMessage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Errormessage",
+            "description": "Error message"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status",
+            "description": "Group status",
+            "example": 1
+          },
+          "verifiedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verifiedat",
+            "description": "Verification timestamp",
+            "example": "2025-09-10T07:51:20.060Z"
+          },
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Createdat",
+            "description": "Creation timestamp",
+            "example": "2025-09-10T07:51:19.527Z"
+          },
+          "updatedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updatedat",
+            "description": "Update timestamp",
+            "example": "2025-09-10T07:51:20.060Z"
           }
         },
         "type": "object",
-        "required": [
-          "total_conversations",
-          "active_conversations",
-          "total_messages"
-        ],
-        "title": "SpaceStats"
+        "required": ["id", "chatId", "spaceId"],
+        "title": "TelegramGroupDetail"
+      },
+      "User": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "User's unique identifier",
+            "example": "220"
+          },
+          "publicAddress": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publicaddress",
+            "description": "User's public wallet address",
+            "example": "0x1234567890"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username",
+            "description": "User's display name",
+            "example": "Foo Bar"
+          },
+          "avatar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar",
+            "description": "User's avatar URL",
+            "example": "https://pbs.png"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status",
+            "description": "User status",
+            "example": 1
+          },
+          "whitelisted": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Whitelisted",
+            "description": "Whitelist status",
+            "example": 0
+          },
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Createdat",
+            "description": "User creation timestamp",
+            "example": "2025-07-11T10:18:14.994Z"
+          },
+          "updatedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updatedat",
+            "description": "User last update timestamp",
+            "example": "2025-09-10T07:22:22.666Z"
+          },
+          "auth0Id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Auth0Id",
+            "description": "Auth0 ID",
+            "example": "twitter|1234567890"
+          },
+          "twitterUsername": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Twitterusername",
+            "description": "Twitter username",
+            "example": "foo_bar"
+          }
+        },
+        "type": "object",
+        "required": ["id"],
+        "title": "User"
       },
       "ValidationError": {
         "properties": {
