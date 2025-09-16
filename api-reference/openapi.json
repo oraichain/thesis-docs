@@ -211,17 +211,17 @@
           {
             "lang": "bash",
             "label": "Join existing conversation",
-            "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/conversations/join-conversation' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"conversation_id\": \"conv_abc123def456\",\n    \"system_prompt\": \"Continue as an expert software architect\",\n    \"user_prompt\": \"Please review the code we discussed earlier\",\n    \"research_mode\": \"deep_research\"\n  }' --no-buffer"
+            "source": "curl -X POST 'https://app-be.thesis.io/api/v1/integration/conversations/join-conversation' \\\n  -H 'Authorization: Bearer YOUR_SPACE_API_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"conversation_id\": \"conv_abc123def456\",\n    \"user_prompt\": \"Please review the code we discussed earlier\",\n    \"research_mode\": \"deep_research\"\n  }' --no-buffer"
           },
           {
             "lang": "python",
             "label": "Join existing conversation",
-            "source": "import requests\n\nurl = 'https://app-be.thesis.io/api/v1/integration/conversations/join-conversation'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n}\ndata = {\n    'conversation_id': 'conv_abc123def456',\n    'system_prompt': 'Continue as an expert software architect',\n    'user_prompt': 'Please review the code we discussed earlier',\n    'research_mode': 'deep_research'\n}\n\nresponse = requests.post(url, headers=headers, json=data)\nprint(response.json())"
+            "source": "import requests\n\nurl = 'https://app-be.thesis.io/api/v1/integration/conversations/join-conversation'\nheaders = {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n}\ndata = {\n    'conversation_id': 'conv_abc123def456',\n    'user_prompt': 'Please review the code we discussed earlier',\n    'research_mode': 'deep_research'\n}\n\nresponse = requests.post(url, headers=headers, json=data)\nprint(response.json())"
           },
           {
             "lang": "typescript",
             "label": "Join existing conversation",
-            "source": "const response = await fetch('https://app-be.thesis.io/api/v1/integration/conversations/join-conversation', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    conversation_id: 'conv_abc123def456',\n    system_prompt: 'Continue as an expert software architect',\n    user_prompt: 'Please review the code we discussed earlier',\n    research_mode: 'deep_research'\n  })\n});\n\nconst data = await response.json();\nconsole.log(data);"
+            "source": "const response = await fetch('https://app-be.thesis.io/api/v1/integration/conversations/join-conversation', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer YOUR_SPACE_API_TOKEN',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    conversation_id: 'conv_abc123def456',\n    user_prompt: 'Please review the code we discussed earlier',\n    research_mode: 'deep_research'\n  })\n});\n\nconst data = await response.json();\nconsole.log(data);"
           }
         ],
         "requestBody": {
