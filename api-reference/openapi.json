@@ -5,12 +5,6 @@
     "description": "Thesis.io provides comprehensive AI-powered research and conversation APIs for DeFi analysis and blockchain research. Create conversations with customizable research modes including chat, deep research, and specialized DeFi tools for real-time market analysis. Join existing conversations via streaming endpoints to participate in collaborative research sessions with advanced AI agents.",
     "version": "0.32.1"
   },
-  "servers": [
-    {
-      "url": "https://app-be.thesis.io",
-      "description": "Production API"
-    }
-  ],
   "paths": {
     "/api/v1/integration/conversations": {
       "post": {
@@ -71,13 +65,20 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConversationErrorResponse"
+                  "$ref": "#/components/schemas/openhands__server__routes__integration__conversation__FastAPIUnauthorizedErrorResponse"
                 }
               }
             }
           },
           "404": {
-            "description": "Resource not found"
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIResourceNotFoundErrorResponse"
+                }
+              }
+            }
           },
           "422": {
             "description": "Validation Error",
@@ -147,12 +148,22 @@
               }
             }
           },
+          "400": {
+            "description": "Invalid request data or missing required fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Authentication required to access conversation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                  "$ref": "#/components/schemas/openhands__server__routes__integration__conversation__FastAPIUnauthorizedErrorResponse"
                 }
               }
             }
@@ -162,7 +173,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                  "$ref": "#/components/schemas/FastAPIResourceNotFoundErrorResponse"
                 }
               }
             }
@@ -285,7 +296,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                  "$ref": "#/components/schemas/ConversationErrorResponse"
                 }
               }
             }
@@ -295,7 +306,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                  "$ref": "#/components/schemas/openhands__server__routes__integration__conversation__FastAPIUnauthorizedErrorResponse"
                 }
               }
             }
@@ -305,7 +316,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                  "$ref": "#/components/schemas/FastAPIResourceNotFoundErrorResponse"
                 }
               }
             }
@@ -325,7 +336,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                  "$ref": "#/components/schemas/ConversationErrorResponse"
                 }
               }
             }
@@ -405,18 +416,35 @@
               }
             }
           },
+          "400": {
+            "description": "Invalid request data or missing required fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpaceErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Authentication required",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                  "$ref": "#/components/schemas/openhands__server__routes__integration__space__FastAPIUnauthorizedErrorResponse"
                 }
               }
             }
           },
           "404": {
-            "description": "Resource not found"
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIResourceNotFoundErrorResponse"
+                }
+              }
+            }
           },
           "422": {
             "description": "Validation Error",
@@ -486,12 +514,22 @@
               }
             }
           },
+          "400": {
+            "description": "Invalid request data or missing required fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpaceErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Authentication required",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                  "$ref": "#/components/schemas/openhands__server__routes__integration__space__FastAPIUnauthorizedErrorResponse"
                 }
               }
             }
@@ -501,7 +539,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                  "$ref": "#/components/schemas/FastAPIResourceNotFoundErrorResponse"
                 }
               }
             }
@@ -574,12 +612,22 @@
               }
             }
           },
+          "400": {
+            "description": "Invalid request data or missing required fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpaceErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Authentication required",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                  "$ref": "#/components/schemas/openhands__server__routes__integration__space__FastAPIUnauthorizedErrorResponse"
                 }
               }
             }
@@ -589,7 +637,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FastAPIErrorResponse"
+                  "$ref": "#/components/schemas/FastAPIResourceNotFoundErrorResponse"
                 }
               }
             }
@@ -681,6 +729,16 @@
               }
             }
           },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIResourceNotFoundErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -764,6 +822,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ConversationErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastAPIResourceNotFoundErrorResponse"
                 }
               }
             }
@@ -928,13 +996,13 @@
             "type": "string",
             "title": "Message",
             "description": "Human-readable error message",
-            "example": "Settings not found"
+            "example": "Invalid request data or missing required fields"
           },
           "msg_id": {
             "type": "string",
             "title": "Msg Id",
             "description": "Machine-readable error code for categorization",
-            "example": "CONFIGURATION$SETTINGS_NOT_FOUND"
+            "example": "INVALID_REQUEST_DATA"
           }
         },
         "type": "object",
@@ -1137,12 +1205,25 @@
             "type": "string",
             "title": "Detail",
             "description": "Error details from FastAPI",
-            "example": "Unauthorized"
+            "example": "Internal server error"
           }
         },
         "type": "object",
         "required": ["detail"],
         "title": "FastAPIErrorResponse"
+      },
+      "FastAPIResourceNotFoundErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "description": "Error details from FastAPI",
+            "example": "Resource not found"
+          }
+        },
+        "type": "object",
+        "required": ["detail"],
+        "title": "FastAPIResourceNotFoundErrorResponse"
       },
       "HTTPValidationError": {
         "properties": {
@@ -2178,6 +2259,19 @@
         "required": ["status"],
         "title": "SpaceDetailResponse"
       },
+      "SpaceErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "description": "Error details from FastAPI",
+            "example": "Invalid request data or missing required fields"
+          }
+        },
+        "type": "object",
+        "required": ["detail"],
+        "title": "SpaceErrorResponse"
+      },
       "SpaceListItem": {
         "properties": {
           "id": {
@@ -2884,6 +2978,32 @@
         "type": "object",
         "required": ["loc", "msg", "type"],
         "title": "ValidationError"
+      },
+      "openhands__server__routes__integration__conversation__FastAPIUnauthorizedErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "description": "Error details from FastAPI",
+            "example": "Unauthorized or invalid token"
+          }
+        },
+        "type": "object",
+        "required": ["detail"],
+        "title": "FastAPIUnauthorizedErrorResponse"
+      },
+      "openhands__server__routes__integration__space__FastAPIUnauthorizedErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "description": "Error details from FastAPI",
+            "example": "Unauthorized"
+          }
+        },
+        "type": "object",
+        "required": ["detail"],
+        "title": "FastAPIUnauthorizedErrorResponse"
       }
     },
     "securitySchemes": {
@@ -2900,5 +3020,11 @@
       "APIKeyAuth": []
     },
     {}
+  ],
+  "servers": [
+    {
+      "url": "https://app-be.thesis.io",
+      "description": "Production Thesis APIs"
+    }
   ]
 }
