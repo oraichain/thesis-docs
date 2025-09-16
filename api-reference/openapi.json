@@ -5,6 +5,12 @@
     "description": "Thesis.io provides comprehensive AI-powered research and conversation APIs for DeFi analysis and blockchain research. Create conversations with customizable research modes including chat, deep research, and specialized DeFi tools for real-time market analysis. Join existing conversations via streaming endpoints to participate in collaborative research sessions with advanced AI agents.",
     "version": "0.32.1"
   },
+  "servers": [
+    {
+      "url": "https://app-be.thesis.io",
+      "description": "Production API"
+    }
+  ],
   "paths": {
     "/api/v1/integration/conversations": {
       "post": {
