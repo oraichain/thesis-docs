@@ -1166,19 +1166,6 @@
             "description": "ID of the existing conversation to join",
             "example": "conv_abc123def456"
           },
-          "system_prompt": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "System Prompt",
-            "description": "System prompt to apply when joining the conversation",
-            "example": "Continue as an expert software architect"
-          },
           "user_prompt": {
             "anyOf": [
               {
@@ -1195,15 +1182,40 @@
           "research_mode": {
             "anyOf": [
               {
+                "$ref": "#/components/schemas/ResearchMode"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Research mode to use in the conversation. Must be one of: chat, deep_research, follow_up",
+            "example": "deep_research"
+          },
+          "latest_event_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Event Id",
+            "description": "ID of the latest event to resume from",
+            "example": 123
+          },
+          "x_device_id": {
+            "anyOf": [
+              {
                 "type": "string"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Research Mode",
-            "description": "Research mode to use in the conversation",
-            "example": "deep_research"
+            "title": "X Device Id",
+            "description": "Device ID to use for the conversation",
+            "example": "123"
           }
         },
         "type": "object",
@@ -1357,7 +1369,7 @@
       },
       "ResearchMode": {
         "type": "string",
-        "enum": ["chat", "deep_research", "follow_up", "rerun_section"],
+        "enum": ["chat", "deep_research", "follow_up"],
         "title": "ResearchMode"
       },
       "Space": {
