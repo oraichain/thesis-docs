@@ -34,7 +34,8 @@
             "group": "Tutorials",
             "pages": [
               "examples/tutorials/create-new-conversation",
-              "examples/tutorials/join-conversation"
+              "examples/tutorials/join-conversation",
+              "examples/tutorials/conversation-event-handling"
             ]
           },
           {
@@ -44,6 +45,17 @@
               "examples/live-demos/polymarket-predictions",
               "examples/live-demos/tokenizing-your-news",
               "examples/live-demos/universal-swap"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "SDKs",
+        "groups": [
+          {
+            "group": "SDKs",
+            "pages": [
+              "sdks/python/python-specs"
             ]
           }
         ]
